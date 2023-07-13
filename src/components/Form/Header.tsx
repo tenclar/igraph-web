@@ -4,6 +4,7 @@ import { auto } from "@popperjs/core"
 export function Header() {
     return (
         <>
+
             <Flex
                 as="header"
                 w={"100%"}

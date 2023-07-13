@@ -22,6 +22,8 @@ const series = [300, 25, 50];
 
 export default function Dashboard() {
     return (
+        <>
+        
         <Flex direction="column" h="100vh">
             <SimpleGrid flex={1} gap={4} minChildWidth="320px" alignItems="flex-start">
                 <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
@@ -39,5 +41,6 @@ export default function Dashboard() {
                 </Box>
             </SimpleGrid>
         </Flex>
+        </>
     );
 }
