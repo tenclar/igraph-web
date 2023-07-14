@@ -1,6 +1,10 @@
 import { Flex, SimpleGrid, Text, Box } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
+interface listaAtendimentos {
+    ano:number;
+}
 
 const Chart = dynamic(() => import("react-apexcharts"), {
     ssr: false,
@@ -21,6 +25,11 @@ const options = {
 const series = [300, 25, 50];
 
 export default function Dashboard() {
+    const [ listaAdtendimentosAno, setListaAdtendimentosAno ] = useState<listaAtendimentos[]>[[]]; 
+
+
+    
+
     return (
         <>
         
