@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
 import api from "@/services/api";
-import { Flex, SimpleGrid, Text, Box } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid } from "@chakra-ui/react";
+import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+
+
 
 interface AtendimentoData {
   id: number;
@@ -67,13 +70,12 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  const options = {
+  const options:ApexOptions = {
     labels: labelsData,
     legend: {
       position: "left",
-      markers: {
-        width: "20px",
-        shape: "square",
+      markers: {        
+        width: 20,      
         radius: 4,
       },
     },
@@ -86,17 +88,19 @@ export default function Dashboard() {
       <Flex direction="column" h="100vh">
         <SimpleGrid flex={1} gap={4} minChildWidth="320px" alignItems="flex-start">
           <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
-            <Text fontSize="2xl" mb={4}>
+            <Box fontSize="12" mb={4}>
               Todas as Centrais
-            </Text>
-            <Chart options={options} series={series} type="pie" height={300} />
+            </Box>
+            <Chart  options={options} series={series} type="pie" height={300} />
+          
+            
           </Box>
           <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
-            <Text fontSize="2xl" mb={4}>
+            <Box fontSize="12" mb={4}>
               Estatística de atendimento
               <p>estatistica1</p>
               <p>estatistica2</p>
-            </Text>
+            </Box>
           </Box>
         </SimpleGrid>
       </Flex>

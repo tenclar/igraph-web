@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Flex } from '@chakra-ui/react';
-import Select from 'react-select';
 import api from '@/services/api';
+import { Flex } from '@chakra-ui/react';
+import { useState } from 'react';
+import Select from 'react-select';
 import { UnidadeData } from '../Dashboard/dashboard';
 
 const options1 = [
@@ -46,7 +46,19 @@ function Filter() {
       )}
       
       <br />
-      2020 / 2021 / 2022
+      <select>
+      <option value='todos'>todos</option>
+        <option value='2020'>2020</option>
+        <option value='2021'>2021</option>
+        <option value='2022'>2022</option>
+      </select>
+      <select>
+      <option value='todos'>todos</option>
+        <option value='01'>janeiro</option>
+        <option value='02'>fevereiro</option>
+        <option value='03'>março</option>
+      </select>
+      
     </Flex>
   );
 }
