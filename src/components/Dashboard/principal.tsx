@@ -1,6 +1,7 @@
 import api from "@/services/api";
-import { Box, Flex, SimpleGrid, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { ApexOptions } from "apexcharts";
+import { isThisMonth, isYesterday, parseISO } from 'date-fns'; // Importe as funções necessárias do date-fns
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
@@ -8,7 +9,7 @@ interface AtendimentoData {
   id: number;
   comentarios: string;
   created_at: string;
-  data_de_Atendimento: string;
+  data_de_atendimento: string;
   quantidade: number;
   servicos_id: number;
   unidades_id: number;
@@ -68,21 +69,60 @@ export default function Dashboard() {
   }, []);
 
   // Funções para calcular as quantidades de ontem e do mês
-  const calcularQuantidadeOntem = (index: number) => {
+  const calcularQuantidadeOntem = (id: number) => {
     // Implemente a lógica para calcular a quantidade de ontem
+    // Supondo que listaAtendimentosAno seja a sua lista de atendimentos
+     
+
+   const atendimentosOntemAtual: number[] = [];
+
+   //  const mesAtual = new Date().getMonth();
+     listaAtendimentosAno.forEach((atendimento) => {
+       
+       if (atendimento.unidades_id === id) { 
+       const dataAtendimento = parseISO(atendimento.data_de_atendimento);
+       
+       if (isYesterday(dataAtendimento)) {
+        atendimentosOntemAtual.push(atendimento.quantidade);
+       }
+     }
+     });
+     
+     
+     const totalmes = atendimentosOntemAtual.reduce((acc, quantidade) => acc + quantidade, 0);    
+     return  totalmes
     return 0; // Substitua pelo cálculo real
   };
 
-  const calcularQuantidadeMes = (index: number) => {
+  const calcularQuantidadeMes = (id:number) => {
     // Implemente a lógica para calcular a quantidade do mês
-    return 0; // Substitua pelo cálculo real
+
+   const atendimentosDoMesAtual: number[] = [];
+
+  //  const mesAtual = new Date().getMonth();
+    listaAtendimentosAno.forEach((atendimento) => {
+      
+      if (atendimento.unidades_id === id) { 
+      const dataAtendimento = parseISO(atendimento.data_de_atendimento);
+      
+      if (isThisMonth(dataAtendimento)) {
+        atendimentosDoMesAtual.push(atendimento.quantidade);
+      }
+    }
+    });
+    
+    
+    const totalmes = atendimentosDoMesAtual.reduce((acc, quantidade) => acc + quantidade, 0);    
+    return  totalmes
   };
 
-  const unidadeStats = unidadesData.map((unidade, index) => ({
+  const unidadeStats = unidadesData.map((unidade, index) => ({ 
+    id: unidade.id,
     nome: unidade.nome,
-    ontem: calcularQuantidadeOntem(index),
-    mes: calcularQuantidadeMes(index),
+    ontem: calcularQuantidadeOntem(unidade.id),
+    mes: calcularQuantidadeMes(unidade.id),
     total: seriesData[index],
+    
   }));
 
   const totalQuantidade = unidadeStats.reduce((total, unidade) => total + unidade.total, 0);
