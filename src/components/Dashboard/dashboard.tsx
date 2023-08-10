@@ -88,7 +88,7 @@ export default function Dashboard() {
       <Flex direction="column" h="100vh">
         <SimpleGrid flex={1} gap={4} minChildWidth="320px" alignItems="flex-start">
           <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
-            <Box fontSize="12" mb={4}>
+            <Box fontSize="2xl" mb={4}>
               Todas as Centrais
             </Box>
             <Chart  options={options} series={series} type="pie" height={300} />
@@ -96,7 +96,7 @@ export default function Dashboard() {
             
           </Box>
           <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
-            <Box fontSize="12" mb={4}>
+            <Box fontSize="2xl" mb={4}>
               Estatística de atendimento
               <p>estatistica1</p>
               <p>estatistica2</p>
