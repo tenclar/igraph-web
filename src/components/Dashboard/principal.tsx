@@ -1,5 +1,5 @@
 import api from "@/services/api";
-import { Box, Flex, SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -32,29 +32,30 @@ export default function Dashboard() {
   const [listaAtendimentosAno, setListaAtendimentosAno] = useState<AtendimentoData[]>([]);
   const [seriesData, setSeriesData] = useState<number[]>([]);
   const [labelsData, setLabelsData] = useState<string[]>([]);
+  const [unidadesData, setUnidadesData] = useState<UnidadeData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseAtendimentos = await api.get("/atendimentos"); // Substitua "/atendimentos" pelo endpoint correto da sua API
+        const responseAtendimentos = await api.get("/atendimentos"); //Pega do endpoint da rota atendimentos
         setListaAtendimentosAno(responseAtendimentos.data);
 
         // Puxar os dados da rota de unidades
-        const responseUnidades = await api.get("/unidades"); // Substitua "/unidades" pelo endpoint correto da sua API
+        const responseUnidades = await api.get("/unidades"); // Pega do endpoint da rota unidades
         const unidadesData: UnidadeData[] = responseUnidades.data;
 
-        // Cria um objeto para contar a quantidade de vezes que cada unidade aparece
+        // Cria um objeto para somar a quantidade de atendimentos por unidade
         const unidadeCount: { [key: number]: number } = {};
         responseAtendimentos.data.forEach((atendimento: AtendimentoData) => {
           const unidadeId = atendimento.unidades_id;
-          unidadeCount[unidadeId] = (unidadeCount[unidadeId] || 0) + 1;
+          unidadeCount[unidadeId] = (unidadeCount[unidadeId] || 0) + atendimento.quantidade;
         });
 
         // Obtém as labels e séries para o gráfico de pizza
         const unidadesIds = Object.keys(unidadeCount).map(Number);
         const unidadesQuantidades = Object.values(unidadeCount);
 
-        // Preenche as labels com os nomes das unidades obtidos da rota de unidades
+        
         const unidadesNomes = unidadesIds.map((id) => {
           const unidade = unidadesData.find((unidade) => unidade.id === id);
           return unidade ? unidade.nome : `Unidade ${id}`;
@@ -70,18 +71,33 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  const options:ApexOptions = {
+  const options: ApexOptions = {
     labels: labelsData,
     legend: {
       position: "left",
-      markers: {        
-        width: 20,      
+      markers: {
+        width: 20,
         radius: 4,
       },
     },
   };
 
-  const series = seriesData;
+ 
+
+  const unidadeStats = unidadesData.map((unidade, index) => ({
+    nome: unidade.nome,
+    ontem: calcularQuantidade("ontem", unidade.id),
+    mes: calcularQuantidade("mes", unidade.id),
+    total: calcularQuantidade("total", unidade.id),
+  }));
+
+  const calcularQuantidade = (periodo: string, unidadeId: number) => {
+    const atendimentosDoPeriodo = listaAtendimentosAno.filter((atendimento) =>
+      atendimento.unidades_id === unidadeId && atendimento.data_de_Atendimento === periodo
+    );
+
+    return atendimentosDoPeriodo.reduce((total, atendimento) => total + atendimento.quantidade, 0);
+  };
 
   return (
     <>
@@ -91,18 +107,36 @@ export default function Dashboard() {
             <Box fontSize="2xl" mb={4}>
               Todas as Centrais
             </Box>
-            <Chart  options={options} series={series} type="pie" height={300} />
-          
-            
+            <Chart options={options} series={seriesData} type="pie" height={300} />
           </Box>
           <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
             <Box fontSize="2xl" mb={4}>
-              Estatística de atendimento
-              <p>estatistica1</p>
-              <p>estatistica2</p>
+              Estatísticas de atendimento por Unidade
             </Box>
+            <Table variant="striped" colorScheme="teal">
+              <Thead>
+                <Tr>
+                  <Th>Central</Th>
+                  <Th>Ontem</Th>
+                  <Th>Mês</Th>
+                  <Th>Total</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {unidadeStats.map((stats) => (
+                  <Tr key={stats.nome}>
+                    <Td>{stats.nome}</Td>
+                    <Td>{stats.ontem}</Td>
+                    <Td>{stats.mes}</Td>
+                    <Td>{stats.total}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
           </Box>
+          {/* ... */}
         </SimpleGrid>
+        {/* ... */}
       </Flex>
     </>
   );

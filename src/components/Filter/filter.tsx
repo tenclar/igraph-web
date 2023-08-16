@@ -2,7 +2,7 @@ import api from '@/services/api';
 import { Flex } from '@chakra-ui/react';
 import { useState } from 'react';
 import Select from 'react-select';
-import { UnidadeData } from '../Dashboard/dashboard';
+import { UnidadeData } from '../Dashboard/principal';
 
 const options1 = [
   { value: '1', label: 'Geral' },
