@@ -4,8 +4,6 @@ import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-
-
 interface AtendimentoData {
   id: number;
   comentarios: string;
@@ -37,24 +35,21 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseAtendimentos = await api.get("/atendimentos"); //Pega do endpoint da rota atendimentos
+        const responseAtendimentos = await api.get("/atendimentos");
         setListaAtendimentosAno(responseAtendimentos.data);
 
-        // Puxar os dados da rota de unidades
-        const responseUnidades = await api.get("/unidades"); // Pega do endpoint da rota unidades
+        const responseUnidades = await api.get("/unidades");
         const unidadesData: UnidadeData[] = responseUnidades.data;
-
-        // Cria um objeto para somar a quantidade de atendimentos por unidade
+        
+        // Cálculo das quantidades por unidade para o gráfico
         const unidadeCount: { [key: number]: number } = {};
         responseAtendimentos.data.forEach((atendimento: AtendimentoData) => {
           const unidadeId = atendimento.unidades_id;
           unidadeCount[unidadeId] = (unidadeCount[unidadeId] || 0) + atendimento.quantidade;
         });
 
-        // Obtém as labels e séries para o gráfico de pizza
         const unidadesIds = Object.keys(unidadeCount).map(Number);
         const unidadesQuantidades = Object.values(unidadeCount);
-
         
         const unidadesNomes = unidadesIds.map((id) => {
           const unidade = unidadesData.find((unidade) => unidade.id === id);
@@ -63,6 +58,7 @@ export default function Dashboard() {
 
         setLabelsData(unidadesNomes);
         setSeriesData(unidadesQuantidades);
+        setUnidadesData(unidadesData); // Armazenar os dados das unidades
       } catch (error) {
         console.log(error);
       }
@@ -70,6 +66,36 @@ export default function Dashboard() {
 
     fetchData();
   }, []);
+
+  // Funções para calcular as quantidades de ontem e do mês
+  const calcularQuantidadeOntem = (index: number) => {
+    // Implemente a lógica para calcular a quantidade de ontem
+    return 0; // Substitua pelo cálculo real
+  };
+
+  const calcularQuantidadeMes = (index: number) => {
+    // Implemente a lógica para calcular a quantidade do mês
+    return 0; // Substitua pelo cálculo real
+  };
+
+  const unidadeStats = unidadesData.map((unidade, index) => ({
+    nome: unidade.nome,
+    ontem: calcularQuantidadeOntem(index),
+    mes: calcularQuantidadeMes(index),
+    total: seriesData[index],
+  }));
+
+  const totalQuantidade = unidadeStats.reduce((total, unidade) => total + unidade.total, 0);
+
+  const unidadeStatsComTotal = [
+    ...unidadeStats,
+    {
+      nome: 'Total',
+      ontem: unidadeStats.reduce((total, unidade) => total + unidade.ontem, 0),
+      mes: unidadeStats.reduce((total, unidade) => total + unidade.mes, 0),
+      total: totalQuantidade,
+    },
+  ];
 
   const options: ApexOptions = {
     labels: labelsData,
@@ -82,22 +108,8 @@ export default function Dashboard() {
     },
   };
 
- 
+  const series = seriesData;
 
-  const unidadeStats = unidadesData.map((unidade, index) => ({
-    nome: unidade.nome,
-    ontem: calcularQuantidade("ontem", unidade.id),
-    mes: calcularQuantidade("mes", unidade.id),
-    total: calcularQuantidade("total", unidade.id),
-  }));
-
-  const calcularQuantidade = (periodo: string, unidadeId: number) => {
-    const atendimentosDoPeriodo = listaAtendimentosAno.filter((atendimento) =>
-      atendimento.unidades_id === unidadeId && atendimento.data_de_Atendimento === periodo
-    );
-
-    return atendimentosDoPeriodo.reduce((total, atendimento) => total + atendimento.quantidade, 0);
-  };
 
   return (
     <>
@@ -107,7 +119,7 @@ export default function Dashboard() {
             <Box fontSize="2xl" mb={4}>
               Todas as Centrais
             </Box>
-            <Chart options={options} series={seriesData} type="pie" height={300} />
+            <Chart options={options} series={series} type="pie" height={300} />
           </Box>
           <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
             <Box fontSize="2xl" mb={4}>
@@ -116,14 +128,14 @@ export default function Dashboard() {
             <Table variant="striped" colorScheme="teal">
               <Thead>
                 <Tr>
-                  <Th>Central</Th>
-                  <Th>Ontem</Th>
-                  <Th>Mês</Th>
-                  <Th>Total</Th>
+                  <Th  fontWeight="bold">Central</Th>
+                  <Th  fontWeight="bold">Ontem</Th>
+                  <Th  fontWeight="bold">Mês</Th>
+                  <Th  fontWeight="bold">Total</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {unidadeStats.map((stats) => (
+                {unidadeStatsComTotal.map((stats) => (
                   <Tr key={stats.nome}>
                     <Td>{stats.nome}</Td>
                     <Td>{stats.ontem}</Td>
