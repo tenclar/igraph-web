@@ -68,59 +68,19 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  // Funções para calcular as quantidades de ontem e do mês
-  const calcularQuantidadeOntem = (id: number) => {
-    // Implemente a lógica para calcular a quantidade de ontem
-    // Supondo que listaAtendimentosAno seja a sua lista de atendimentos
-     
-
-   const atendimentosOntemAtual: number[] = [];
-
-   //  const mesAtual = new Date().getMonth();
-     listaAtendimentosAno.forEach((atendimento) => {
-       
-       if (atendimento.unidades_id === id) { 
-       const dataAtendimento = parseISO(atendimento.data_de_atendimento);
-       
-       if (isYesterday(dataAtendimento)) {
-        atendimentosOntemAtual.push(atendimento.quantidade);
-       }
-     }
-     });
-     
-     
-     const totalmes = atendimentosOntemAtual.reduce((acc, quantidade) => acc + quantidade, 0);    
-     return  totalmes
-    return 0; // Substitua pelo cálculo real
+  const calcularQuantidadePorCriterio = (id: number, criterio: (date: Date) => boolean) => {
+    return listaAtendimentosAno
+      .filter(atendimento => atendimento.unidades_id === id && criterio(parseISO(atendimento.data_de_atendimento)))
+      .reduce((acc, atendimento) => acc + atendimento.quantidade, 0);
   };
+  
 
-  const calcularQuantidadeMes = (id:number) => {
-    // Implemente a lógica para calcular a quantidade do mês
-
-   const atendimentosDoMesAtual: number[] = [];
-
-  //  const mesAtual = new Date().getMonth();
-    listaAtendimentosAno.forEach((atendimento) => {
-      
-      if (atendimento.unidades_id === id) { 
-      const dataAtendimento = parseISO(atendimento.data_de_atendimento);
-      
-      if (isThisMonth(dataAtendimento)) {
-        atendimentosDoMesAtual.push(atendimento.quantidade);
-      }
-    }
-    });
-    
-    
-    const totalmes = atendimentosDoMesAtual.reduce((acc, quantidade) => acc + quantidade, 0);    
-    return  totalmes
-  };
 
   const unidadeStats = unidadesData.map((unidade, index) => ({ 
     id: unidade.id,
     nome: unidade.nome,
-    ontem: calcularQuantidadeOntem(unidade.id),
-    mes: calcularQuantidadeMes(unidade.id),
+    ontem: calcularQuantidadePorCriterio(unidade.id, isYesterday),
+    mes: calcularQuantidadePorCriterio(unidade.id, isThisMonth),
     total: seriesData[index],
     
   }));
