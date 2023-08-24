@@ -123,11 +123,11 @@ export default function DashboardPrincipal() {
             </Box>
             <Chart options={options} series={series} type="pie" height={300} />
           </Box>
-          <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
+          <Box p={8} bg="white" borderRadius={8} pb={4}>
             <Box fontSize="2xl" mb={4}>
               Estatísticas de atendimento por Unidade
             </Box>
-            <Table variant="striped" colorScheme="teal">
+            <Table variant="striped" colorScheme="gray">
               <Thead>
                 <Tr>
                   <Th  fontWeight="bold">Central</Th>
