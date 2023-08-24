@@ -1,4 +1,5 @@
 import api from "@/services/api";
+import { styles } from "@/styles/config";
 import { Box, Flex, SimpleGrid, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { ApexOptions } from "apexcharts";
 import { isThisMonth, isYesterday, parseISO } from 'date-fns'; // Importe as funções necessárias do date-fns
@@ -27,7 +28,7 @@ const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export default function Dashboard() {
+export default function DashboardPrincipal() {
   const [listaAtendimentosAno, setListaAtendimentosAno] = useState<AtendimentoData[]>([]);
   const [seriesData, setSeriesData] = useState<number[]>([]);
   const [labelsData, setLabelsData] = useState<string[]>([]);
@@ -117,6 +118,7 @@ export default function Dashboard() {
         <SimpleGrid flex={1} gap={4} minChildWidth="320px" alignItems="flex-start">
           <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
             <Box fontSize="2xl" mb={4}>
+              <h1 style={styles.h1}>Atendimentos</h1>
               Todas as Centrais
             </Box>
             <Chart options={options} series={series} type="pie" height={300} />
