@@ -18,13 +18,18 @@ interface AtendimentoData {
   updated_at: string;
   usuarios_id: number;
 }
+export interface Unidade {
+  id : number,
+  nome: string;
+}
 
 const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export default function DashboardRioBranco() {
-  const [atendimentosRioBranco, setAtendimentosRioBranco] = useState<AtendimentoData[]>([]);
+export default function DashboardUnidade() {
+  const [unidades, setUnidades] = useState<Unidade[]>([])
+  const [atendimentosUnidade, setAtendimentosUnidade] = useState<AtendimentoData[]>([]);
   const [ontemPresencial, setOntemPresencial] = useState<number>(0);
   const [mesPresencial, setMesPresencial] = useState<number>(0);
   const [parcialPresencial, setParcialPresencial] = useState<number>(0);
@@ -36,22 +41,28 @@ export default function DashboardRioBranco() {
   const [parcialRedesSociais, setParcialRedesSociais] = useState<number>(0);
 
   useEffect(() => {
-    const fetchAtendimentosRioBranco = async () => {
+    const fetchUnidadesAndAtendimentos = async () => {
       try {
-        const responseAtendimentos = await api.get("/atendimentos", {
-          params: {
-            unidades_id: 3, // ID da unidade "Rio Branco"
-          },
+        // Buscar unidades da API
+        const responseUnidades = await api.get("/unidades");
+        setUnidades(responseUnidades.data);
+
+        // Buscar e calcular dados para cada unidade
+        responseUnidades.data.forEach(async (unidade: Unidade) => {
+          const responseAtendimentos = await api.get("/atendimentos", {
+            params: {
+              unidades_id: unidade.id,
+            },
+          });
+          calculateQuantities(responseAtendimentos.data);
         });
-        setAtendimentosRioBranco(responseAtendimentos.data);
-        calculateQuantities(responseAtendimentos.data);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchAtendimentosRioBranco();
-  }, );
+    fetchUnidadesAndAtendimentos();
+  }, []);
 
   const calculateQuantities = (atendimentos: AtendimentoData[]) => {
     const presencialAtendimentos = atendimentos.filter(atendimento => atendimento.servicos_id === 2);
@@ -107,31 +118,33 @@ export default function DashboardRioBranco() {
   ];
 
   return (
-    <>
-      <Flex direction="column" h="100vh">
-        <SimpleGrid flex={1} gap={4} minChildWidth="320px" alignItems="flex-start">
-          <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
-            <Box fontSize="2xl" mb={4}>
-              <h1 style={styles.h1}>Atendimentos</h1>
-              Unidade Rio Branco
-              <p style={styles.p}>Desde 27 de Dezembro de 2010</p>
-            </Box>
-            <Chart options={options} series={Presencial} type="pie" height={300} />
-          </Box>
-          <Box p={8} bg="white" borderRadius={8} pb={4}>
-            <Box fontSize="2xl" mb={4}>
-              Detalhes de Atendimento - Unidade Rio Branco
-            </Box>
-            <Table variant="striped" colorScheme="gray">
-              <Thead>
-                <Tr>
-                  <Th fontWeight="bold">Período</Th>
-                  <Th fontWeight="bold">Presencial</Th>
-                  <Th fontWeight="bold">Call Center</Th>
-                  <Th fontWeight="bold">Redes Sociais</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
+    <Flex direction="column" h="100vh">
+      <SimpleGrid flex={1} gap={4} minChildWidth="800px" alignItems="flex-start">
+        {unidades.map((unidade) => (
+          <Box key={unidade.id} p={8} bg="white" borderRadius={8} pb={4} mb={4}>
+            <Flex align="flex-start">
+              <Box flex="1" pr={4}>
+                <Box fontSize="2xl" mb={4}>
+                  <h1 style={styles.h1}>Atendimentos</h1>
+                  {unidade.nome}
+                  <p style={styles.p}>Desde 01 de Dezembro de 2022</p>
+                </Box>
+                <Chart options={options} series={Presencial} type="pie" height={300} />
+              </Box>
+              <Box flex="1">
+                <Box fontSize="2xl" mb={4}>
+                  Detalhes de Atendimento - {unidade.nome}
+                </Box>
+                <Table variant="striped" colorScheme="gray">
+                  <Thead>
+                    <Tr>
+                      <Th fontWeight="bold">Período</Th>
+                      <Th fontWeight="bold">Presencial</Th>
+                      <Th fontWeight="bold">Call Center</Th>
+                      <Th fontWeight="bold">Redes Sociais</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
                 <Tr>
                   <Td>Ontem</Td>
                   <Td>{Presencial[0]}</Td>
@@ -151,10 +164,12 @@ export default function DashboardRioBranco() {
                   <Td>{RedesSociais[2]}</Td>
                 </Tr>
               </Tbody>
-            </Table>
+                </Table>
+              </Box>
+            </Flex>
           </Box>
-        </SimpleGrid>
-      </Flex>
-    </>
+        ))}
+      </SimpleGrid>
+    </Flex>
   );
-}
+}  

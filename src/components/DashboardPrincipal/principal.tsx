@@ -116,7 +116,7 @@ export default function DashboardPrincipal() {
     <>
       <Flex direction="column" h="100vh">
         <SimpleGrid flex={1} gap={4} minChildWidth="320px" alignItems="flex-start">
-          <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
+          <Box p={8} bg="white" borderRadius={8} pb={4}>
             <Box fontSize="2xl" mb={4}>
               <h1 style={styles.h1}>Atendimentos</h1>
               Todas as Centrais
