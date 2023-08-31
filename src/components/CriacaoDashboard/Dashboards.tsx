@@ -18,16 +18,25 @@ interface AtendimentoData {
   updated_at: string;
   usuarios_id: number;
 }
-export interface Unidade {
-  id : number,
+
+interface Servico {
+  id: number;
   nome: string;
 }
+
+export interface Unidade {
+  id : number,
+  nome: string,
+  data_inaugural: string,
+}
+
 
 const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
 export default function DashboardUnidade() {
+  const [servicos, setServicos] = useState<Servico[]>([])
   const [unidades, setUnidades] = useState<Unidade[]>([])
   const [atendimentosUnidade, setAtendimentosUnidade] = useState<AtendimentoData[]>([]);
   const [ontemPresencial, setOntemPresencial] = useState<number>(0);
@@ -68,6 +77,7 @@ export default function DashboardUnidade() {
     const presencialAtendimentos = atendimentos.filter(atendimento => atendimento.servicos_id === 2);
     const callCenterAtendimentos = atendimentos.filter(atendimento => atendimento.servicos_id === 3);
     const redesSociaisAtendimentos = atendimentos.filter(atendimento => atendimento.servicos_id === 4);
+    
 
     setOntemPresencial(calcularQuantidadePorCriterio(presencialAtendimentos, isYesterday));
     setMesPresencial(calcularQuantidadePorCriterio(presencialAtendimentos, isThisMonth));
@@ -89,7 +99,7 @@ export default function DashboardUnidade() {
   };
 
   const options: ApexOptions = {
-    labels: ["Presencial", "Call Center", "Redes Sociais"],
+    labels: ["Presencial", "Call Center", "Redes Sociais", "Chat"],
     legend: {
       position: "left",
       markers: {
@@ -117,6 +127,7 @@ export default function DashboardUnidade() {
     parcialRedesSociais,
   ];
 
+
   return (
     <Flex direction="column" h="100vh">
       <SimpleGrid flex={1} gap={4} minChildWidth="800px" alignItems="flex-start">
@@ -127,7 +138,7 @@ export default function DashboardUnidade() {
                 <Box fontSize="2xl" mb={4}>
                   <h1 style={styles.h1}>Atendimentos</h1>
                   {unidade.nome}
-                  <p style={styles.p}>Desde 01 de Dezembro de 2022</p>
+                  <p style={styles.p}> Desde {unidade.data_inaugural}</p>
                 </Box>
                 <Chart options={options} series={Presencial} type="pie" height={300} />
               </Box>
