@@ -6,29 +6,9 @@ import { isThisMonth, isYesterday, parseISO } from "date-fns";
 import api from "@/services/api";
 import { styles } from "@/styles/config";
 import { kMaxLength } from "buffer";
-
-interface AtendimentoData {
-  id: number;
-  comentarios: string;
-  created_at: string;
-  data_de_atendimento: string;
-  quantidade: number;
-  servicos_id: number;
-  unidades_id: number;
-  updated_at: string;
-  usuarios_id: number;
-}
-
-interface Servico {
-  id: number;
-  nome: string;
-}
-
-export interface Unidade {
-  id : number,
-  nome: string,
-  data_inaugural: string,
-}
+import { AtendimentoData } from "./AtendimentoInterface";
+import { Unidade } from "./UnidadeInterface";
+import { Servico } from "./ServicosInterface";
 
 
 const Chart = dynamic(() => import("react-apexcharts"), {
