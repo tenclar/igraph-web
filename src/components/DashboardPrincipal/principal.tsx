@@ -5,18 +5,9 @@ import { ApexOptions } from "apexcharts";
 import { isThisMonth, isYesterday, parseISO } from 'date-fns'; // Importe as funções necessárias do date-fns
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { AtendimentoData } from "../CriacaoDashboard/interfaces/AtendimentoInterface";
 
-interface AtendimentoData {
-  id: number;
-  comentarios: string;
-  created_at: string;
-  data_de_atendimento: string;
-  quantidade: number;
-  servicos_id: number;
-  unidades_id: number;
-  updated_at: string;
-  usuarios_id: number;
-}
+
 
 export interface UnidadeData {
   id: number;
@@ -83,8 +74,8 @@ export default function DashboardPrincipal() {
     ontem: calcularQuantidadePorCriterio(unidade.id, isYesterday),
     mes: calcularQuantidadePorCriterio(unidade.id, isThisMonth),
     total: seriesData[index],
-    
   }));
+  
 
   const totalQuantidade = unidadeStats.reduce((total, unidade) => total + unidade.total, 0);
 
@@ -98,17 +89,17 @@ export default function DashboardPrincipal() {
     },
   ];
 
-  const options: ApexOptions = {
-    labels: labelsData,
-    legend: {
-      position: "left",
-      markers: {
-        width: 20,
-        radius: 4,
-      },
-    },
-  };
 
+const options: ApexOptions = {
+  labels: labelsData,
+  legend: {
+    position: "left",
+    markers: {
+      width: 20,
+      radius: 4,
+    },
+  },
+};
   const series = seriesData;
 
 

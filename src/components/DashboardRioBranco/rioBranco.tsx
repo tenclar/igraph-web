@@ -25,86 +25,91 @@ const Chart = dynamic(() => import("react-apexcharts"), {
 
 export default function DashboardRioBranco() {
   const [atendimentosRioBranco, setAtendimentosRioBranco] = useState<AtendimentoData[]>([]);
-  const [ontemPresencial, setOntemPresencial] = useState<number>(0);
-  const [mesPresencial, setMesPresencial] = useState<number>(0);
-  const [parcialPresencial, setParcialPresencial] = useState<number>(0);
-  const [ontemCallCenter, setOntemCallCenter] = useState<number>(0);
-  const [mesCallCenter, setMesCallCenter] = useState<number>(0);
-  const [parcialCallCenter, setParcialCallCenter] = useState<number>(0);
-  const [ontemRedesSociais, setOntemRedesSociais] = useState<number>(0);
-  const [mesRedesSociais, setMesRedesSociais] = useState<number>(0);
-  const [parcialRedesSociais, setParcialRedesSociais] = useState<number>(0);
+  const [servicos, setServicos] = useState<number[]>([]);
+  const [servicosNomes, setServicosNomes] = useState<{ [key: number]: string }>({});
+  const [quantities, setQuantities] = useState<{ [key: number]: { ontem: number; mes: number; parcial: number } }>({});
 
   useEffect(() => {
-    const fetchAtendimentosRioBranco = async () => {
+    const fetchData = async () => {
       try {
         const responseAtendimentos = await api.get("/atendimentos", {
           params: {
             unidades_id: 3, // ID da unidade "Rio Branco"
           },
         });
-        setAtendimentosRioBranco(responseAtendimentos.data);
-        calculateQuantities(responseAtendimentos.data);
+        const atendimentosData: AtendimentoData[] = responseAtendimentos.data;
+        setAtendimentosRioBranco(atendimentosData);
+
+        const uniqueServicos = Array.from(new Set(atendimentosData.map((atendimento) => atendimento.servicos_id)));
+        setServicos(uniqueServicos);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchAtendimentosRioBranco();
-  }, );
+    fetchData();
+  }, []);
 
-  const calculateQuantities = (atendimentos: AtendimentoData[]) => {
-    const presencialAtendimentos = atendimentos.filter(atendimento => atendimento.servicos_id === 2);
-    const callCenterAtendimentos = atendimentos.filter(atendimento => atendimento.servicos_id === 3);
-    const redesSociaisAtendimentos = atendimentos.filter(atendimento => atendimento.servicos_id === 4);
+  const fetchServicosNomes = async () => {
+    try {
+      const responseServicos = await api.get("/servicos");
+      const servicosData = responseServicos.data;
 
-    setOntemPresencial(calcularQuantidadePorCriterio(presencialAtendimentos, isYesterday));
-    setMesPresencial(calcularQuantidadePorCriterio(presencialAtendimentos, isThisMonth));
-    setParcialPresencial(presencialAtendimentos.reduce((acc, atendimento) => acc + atendimento.quantidade, 0));
+      const nomes = servicosData.reduce((acc: { [key: number]: string }, servico: { id: number; nome: string }) => {
+        acc[servico.id] = servico.nome;
+        return acc;
+      }, {});
 
-    setOntemCallCenter(calcularQuantidadePorCriterio(callCenterAtendimentos, isYesterday));
-    setMesCallCenter(calcularQuantidadePorCriterio(callCenterAtendimentos, isThisMonth));
-    setParcialCallCenter(callCenterAtendimentos.reduce((acc, atendimento) => acc + atendimento.quantidade, 0));
-
-    setOntemRedesSociais(calcularQuantidadePorCriterio(redesSociaisAtendimentos, isYesterday));
-    setMesRedesSociais(calcularQuantidadePorCriterio(redesSociaisAtendimentos, isThisMonth));
-    setParcialRedesSociais(redesSociaisAtendimentos.reduce((acc, atendimento) => acc + atendimento.quantidade, 0));
+      setServicosNomes(nomes);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    fetchServicosNomes();
+  }, []);
 
   const calcularQuantidadePorCriterio = (atendimentos: AtendimentoData[], criterio: (date: Date) => boolean) => {
     return atendimentos
-      .filter(atendimento => criterio(parseISO(atendimento.data_de_atendimento)))
+      .filter((atendimento) => criterio(parseISO(atendimento.data_de_atendimento)))
       .reduce((acc, atendimento) => acc + atendimento.quantidade, 0);
   };
 
-  const options: ApexOptions = {
-    labels: ["Presencial", "Call Center", "Redes Sociais"],
-    legend: {
-      position: "left",
-      markers: {
-        width: 20,
-        radius: 4,
-      },
-    },
+  const calculateQuantities = () => {
+    const newQuantities: { [key: number]: { ontem: number; mes: number; parcial: number } } = {};
+
+    servicos.forEach((servicoId) => {
+      const servicoAtendimentos = atendimentosRioBranco.filter((atendimento) => atendimento.servicos_id === servicoId);
+      const ontem = calcularQuantidadePorCriterio(servicoAtendimentos, isYesterday);
+      const mes = calcularQuantidadePorCriterio(servicoAtendimentos, isThisMonth);
+      const parcial = servicoAtendimentos.reduce((acc, atendimento) => acc + atendimento.quantidade, 0);
+
+      newQuantities[servicoId] = { ontem, mes, parcial };
+    });
+
+    setQuantities(newQuantities);
   };
 
-  const Presencial = [
-    ontemPresencial,
-    mesPresencial,
-    parcialPresencial,
-  ];
+  useEffect(() => {
+    calculateQuantities();
+  }, [atendimentosRioBranco, servicos]);
+ 
 
-  const CallCenter = [
-    ontemCallCenter,
-    mesCallCenter,
-    parcialCallCenter,
-  ];
+  
+const servicosOrdenados = servicos.sort((a, b) => a - b);
 
-  const RedesSociais = [
-    ontemRedesSociais,
-    mesRedesSociais,
-    parcialRedesSociais,
-  ];
+const options: ApexOptions = {
+  labels: servicosOrdenados.map((servicoId) => servicosNomes[servicoId] || ""),
+  legend: {
+    position: "left",
+    markers: {
+      width: 20,
+      radius: 4,
+    },
+  },
+};
+
 
   return (
     <>
@@ -116,7 +121,7 @@ export default function DashboardRioBranco() {
               Unidade Rio Branco
               <p style={styles.p}>Desde 27 de Dezembro de 2010</p>
             </Box>
-            <Chart options={options} series={Presencial} type="pie" height={300} />
+            <Chart options={options} series={Object.values(quantities).map((q) => q.parcial)} type="pie" height={300} />
           </Box>
           <Box p={8} bg="white" borderRadius={8} pb={4}>
             <Box fontSize="2xl" mb={4}>
@@ -126,29 +131,31 @@ export default function DashboardRioBranco() {
               <Thead>
                 <Tr>
                   <Th fontWeight="bold">Período</Th>
-                  <Th fontWeight="bold">Presencial</Th>
-                  <Th fontWeight="bold">Call Center</Th>
-                  <Th fontWeight="bold">Redes Sociais</Th>
+                  {servicos.map((servicoId) => (
+                    <Th key={servicoId} fontWeight="bold">
+                      {servicosNomes[servicoId] || ""}
+                    </Th>
+                  ))}
                 </Tr>
               </Thead>
               <Tbody>
                 <Tr>
                   <Td>Ontem</Td>
-                  <Td>{Presencial[0]}</Td>
-                  <Td>{CallCenter[0]}</Td>
-                  <Td>{RedesSociais[0]}</Td>
+                  {servicos.map((servicoId) => (
+                    <Td key={servicoId}>{quantities[servicoId]?.ontem || 0}</Td>
+                  ))}
                 </Tr>
                 <Tr>
                   <Td>Mês</Td>
-                  <Td>{Presencial[1]}</Td>
-                  <Td>{CallCenter[1]}</Td>
-                  <Td>{RedesSociais[1]}</Td>
+                  {servicos.map((servicoId) => (
+                    <Td key={servicoId}>{quantities[servicoId]?.mes || 0}</Td>
+                  ))}
                 </Tr>
                 <Tr>
                   <Td>Parcial</Td>
-                  <Td>{Presencial[2]}</Td>
-                  <Td>{CallCenter[2]}</Td>
-                  <Td>{RedesSociais[2]}</Td>
+                  {servicos.map((servicoId) => (
+                    <Td key={servicoId}>{quantities[servicoId]?.parcial || 0}</Td>
+                  ))}
                 </Tr>
               </Tbody>
             </Table>
