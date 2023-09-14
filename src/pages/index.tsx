@@ -10,7 +10,6 @@ export default function Home() {
             <Header />
             <Filter />
             <DashboardPrincipal/>
-            <DashboardRioBranco/>
             <DashboardUnidade/>
         </>
 
