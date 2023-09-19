@@ -153,11 +153,11 @@ export default function DashboardUnidade() {
 
   return (
     <>
-      <Flex direction="column" h="100vh">
-        <SimpleGrid flex={1} gap={4} minChildWidth="800px" alignItems="flex-start">
+      <Flex direction="column" h="100vh" alignItems="center">
+        <SimpleGrid flex={1} gap={4} minChildWidth="800px" alignItems="flex-start" >
           {unidades.map((unidade, index) => (
             <Box key={unidade.id} p={8} bg="white" borderRadius={8} pb={4}>
-              <Flex align="flex-start">
+              <Flex align="center" justifyContent="center">
                 <Box flex="1" pr={4}>
                   <Box fontSize="2xl" mb={4}>
                     <h1 style={styles.h1}>Atendimentos</h1>
