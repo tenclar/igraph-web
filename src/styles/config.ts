@@ -8,7 +8,7 @@ export const styles = {
   },
   p: {
     fontSize: "15px",
-    marginBotton: 4,
+    marginBottom: 4, // Corrigido para marginBottom
   },
   green: {
     color: "green",
@@ -40,4 +40,4 @@ export const styles = {
   brown: {
     color: "brown",
   },
-};
+}
