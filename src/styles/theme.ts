@@ -17,5 +17,8 @@ export const theme = extendTheme({
                 color:"#000",
             }
         }
+    },
+    headerButton:{
+        bg: "#a0a0a0"
     }
 })

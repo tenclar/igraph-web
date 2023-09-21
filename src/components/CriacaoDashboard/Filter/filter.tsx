@@ -1,10 +1,10 @@
-import api from "@/services/api";
-import { Box, Flex, Button } from "@chakra-ui/react";
 import React, { useState } from "react";
+import api from "@/services/api";
+import { Box, Flex } from "@chakra-ui/react";
 import Select from "react-select";
-import { UnidadeData } from "../DashboardPrincipal/principal";
-
-interface FilterProps{
+import { Unidade } from "../interfaces/UnidadeInterface";
+import UnidadeGrafico from "../DashboardFiltro/UnidadeGrafico";
+interface FilterProps {
   setShowDashboards: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -22,8 +22,8 @@ function Filter({ setShowDashboards }: FilterProps) {
     value: string;
     label: string;
   } | null>(null);
-  const [unidadesData, setUnidadesData] = useState<UnidadeData[]>([]);
-  const [selectedUnidade, setSelectedUnidade] = useState<string | null>(null);
+  const [unidadesData, setUnidadesData] = useState<Unidade[]>([]);
+  const [selectedUnidadeId, setSelectedUnidadeId] = useState<string | null>(null);
 
   const handleOption1Change = async (selectedOption: {
     value: string;
@@ -39,7 +39,7 @@ function Filter({ setShowDashboards }: FilterProps) {
         console.log(error);
       }
     } else {
-      setSelectedUnidade(null);
+      setSelectedUnidadeId(null);
       setShowDashboards(true); // Mostra os Dashboards quando não é "Unidade"
     }
   };
@@ -51,10 +51,10 @@ function Filter({ setShowDashboards }: FilterProps) {
     setSelectedOption2(selectedOption);
 
     if (selectedOption) {
-      setSelectedUnidade(selectedOption.value);
+      setSelectedUnidadeId(selectedOption.value);
       setShowDashboards(false); // Oculta os Dashboards quando é "Unidade"
     } else {
-      setSelectedUnidade(null);
+      setSelectedUnidadeId(null);
       setShowDashboards(true); // Mostra os Dashboards quando não é "Unidade"
     }
   };
@@ -71,10 +71,17 @@ function Filter({ setShowDashboards }: FilterProps) {
       <Select options={options1} value={selectedOption1} onChange={handleOption1Change} />
 
       {selectedOption1 && selectedOption1.value === "2" && (
-        <Select options={getUnidadesOptions()} value={selectedOption2} onChange={handleOption2Change} />
+        <>
+          <Select options={getUnidadesOptions()} value={selectedOption2} onChange={handleOption2Change} />
+          {selectedUnidadeId && (
+            <Box style={{ width: "80%", height: "800px" }}>
+              <UnidadeGrafico unidadeId={selectedUnidadeId} /> {/* Chama o componente UnidadeGrafico */}
+            </Box>
+          )}
+        </>
       )}
 
-      <br />
+      
     </Flex>
   );
 }

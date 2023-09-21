@@ -10,6 +10,7 @@ export const styles = {
     fontSize: "15px",
     marginBottom: 4, // Corrigido para marginBottom
   },
+  
   green: {
     color: "green",
   },
