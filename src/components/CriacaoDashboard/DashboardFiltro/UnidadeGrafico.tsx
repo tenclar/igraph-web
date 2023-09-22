@@ -5,13 +5,15 @@ import { ApexOptions } from "apexcharts";
 import { isThisMonth, isYesterday, parseISO } from "date-fns";
 import api from "@/services/api";
 import { AtendimentoData } from "../interfaces/AtendimentoInterface";
-
+import { styles } from "@/styles/config";
+import { Unidade } from "../interfaces/UnidadeInterface";
 const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
 interface UnidadeGraficoProps {
-  unidadeId: number; // Adapte o tipo de dados conforme necessário
+  unidadeId: number; 
+  
 }
 
 const UnidadeGrafico: React.FC<UnidadeGraficoProps> = ({ unidadeId }) => {
@@ -108,13 +110,13 @@ const UnidadeGrafico: React.FC<UnidadeGraficoProps> = ({ unidadeId }) => {
     <SimpleGrid flex={1} gap={4} minChildWidth="320px" alignItems="flex-start">
       <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
         <Box fontSize="2xl" mb={4}>
-          {/* Conteúdo do cabeçalho do gráfico, se necessário */}
+        <h1 style={styles.h1}>Atendimentos</h1>  
         </Box>
         <Chart options={options} series={Object.values(quantities).map((q) => q.parcial)} type="pie" height={300} />
       </Box>
       <Box p={8} bg="white" borderRadius={8} pb={4}>
         <Box fontSize="2xl" mb={4}>
-          {/* Conteúdo do cabeçalho do detalhe de atendimento, se necessário */}
+          
         </Box>
         <Table variant="striped" colorScheme="gray">
           <Thead>
