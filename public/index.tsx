@@ -1,5 +1,6 @@
 import Head from "next/head";
 import React from "react";
+import { Box, Container} from "@chakra-ui/react"; 
 import { Header } from "@/components/Form/Header";
 import { Footer } from "@/components/Form/Footer";
 
@@ -11,11 +12,11 @@ const HTMLComponent: React.FC = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Igraph-web</title>
       </Head>
-      <body>
-        <div id="root">
-          <Header /> {/* Renderize o componente Header aqui */}
-        </div>
-      </body>
+      <Container>
+        <Box id="root">
+          
+        </Box>
+      </Container>
     </html>
   );
 };

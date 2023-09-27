@@ -67,8 +67,8 @@ function Filter({ setShowDashboards }: FilterProps) {
   };
 
   return (
-    <Flex direction="column" alignItems="center" justifyContent="center" pb={8}>
-      <Select options={options1} value={selectedOption1} onChange={handleOption1Change} />
+    <Flex marginTop={"120px"} direction="column" alignItems="center" justifyContent="center" pb={8}>
+      <Select  options={options1} value={selectedOption1} onChange={handleOption1Change}  />
 
       {selectedOption1 && selectedOption1.value === "2" && (
         <>

@@ -1,7 +1,19 @@
-import React from "react";
-import { Flex, Box, Button,Text,Divider, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, Link } from "@chakra-ui/react";
+import React from "react"
+import { Flex, Box, Button, Text, Divider, Popover,PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody } from "@chakra-ui/react";
 import LogoOca from "../assets/oca_logo_verde.png";
 import { IoMdArrowDropdown } from "react-icons/io";
+import Link from "next/link";
+
+
+const headerStyles = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: "#bdbebd",
+  border: "2px solid green",
+  zIndex: 1, // Coloque o header acima de outros elementos
+};
 
 const imageStyles = {
   width: "80px",
@@ -9,22 +21,24 @@ const imageStyles = {
 };
 
 const logoStyles = {
-  marginLeft: "-40px",
+  marginLeft: "-10px",
 };
+
 
 export function Header() {
   return (
-    <Box bg="#bdbebd" border="green">
+    <Box>
       <Flex
         as="header"
         w={"100%"}
         gap={16}
-        maxWidth={1480}
-        h={16}
+        maxWidth={"100%"}
+        h={20}
         mx="auto"
         px={6}
         align="center"
-      >
+        sx={headerStyles}
+        >
         <Box style={logoStyles}>
           <img src={LogoOca.src} alt="LogoOca" style={imageStyles} />
         </Box>
@@ -41,7 +55,7 @@ export function Header() {
           </PopoverTrigger>
           <PopoverContent boxSize={"auto"}>
             <PopoverArrow />
-            <PopoverBody align="center" >
+            <PopoverBody textAlign="center" >
             <Text mb={1}>
               <Link href="">Inserir novos dados</Link>
             </Text>
@@ -65,7 +79,7 @@ export function Header() {
           </PopoverTrigger>
           <PopoverContent boxSize={"auto"}>
             <PopoverArrow />
-            <PopoverBody align="center" >
+            <PopoverBody textAlign="center" >
             <Text mb={1}>
               <Link href="">Gerar Planilha</Link>
             </Text>
@@ -86,7 +100,7 @@ export function Header() {
           </PopoverTrigger>
           <PopoverContent boxSize={"auto"}>
             <PopoverArrow />
-            <PopoverBody align="center" >
+            <PopoverBody textAlign="center" >
             <Text mb={1}>
               <Link href="">Gerenciar Usuarios</Link>
             </Text>
