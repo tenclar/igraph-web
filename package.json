@@ -24,6 +24,8 @@
     "postcss": "8.4.25",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.1",
+    "react-calendar": "^4.6.0",
+    "react-datepicker": "^4.18.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.11.0",
     "react-router-dom": "^6.16.0",

@@ -21,7 +21,7 @@ const imageStyles = {
 };
 
 const logoStyles = {
-  marginLeft: "-10px",
+  margin: "auto",
 };
 
 
@@ -42,76 +42,7 @@ export function Header() {
         <Box style={logoStyles}>
           <img src={LogoOca.src} alt="LogoOca" style={imageStyles} />
         </Box>
-        <Popover>
-          <PopoverTrigger>
-            <Button
-              colorScheme="HeaderButon"
-              color="#000000"
-              fontSize={20}
-              fontWeight="800"
-            >
-              Dados <IoMdArrowDropdown />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent boxSize={"auto"}>
-            <PopoverArrow />
-            <PopoverBody textAlign="center" >
-            <Text mb={1}>
-              <Link href="">Inserir novos dados</Link>
-            </Text>
-            <Text mb={1}>
-              <Link href="">Gerenciar dados</Link>
-            </Text>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
-
-        <Popover>
-          <PopoverTrigger>
-            <Button
-              colorScheme="HeaderButon"
-              color="#000000"
-              fontSize={20}
-              fontWeight="800"
-            >
-              Relatório <IoMdArrowDropdown />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent boxSize={"auto"}>
-            <PopoverArrow />
-            <PopoverBody textAlign="center" >
-            <Text mb={1}>
-              <Link href="">Gerar Planilha</Link>
-            </Text>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
-
-        <Popover>
-          <PopoverTrigger>
-            <Button
-              colorScheme="HeaderButon"
-              color="#000000"
-              fontSize={20}
-              fontWeight="800"
-            >
-              Configurações <IoMdArrowDropdown />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent boxSize={"auto"}>
-            <PopoverArrow />
-            <PopoverBody textAlign="center" >
-            <Text mb={1}>
-              <Link href="">Gerenciar Usuarios</Link>
-            </Text>
-            <Text mb={1}>
-              <Link href="">Gerenciar Servicos</Link>
-            </Text>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
-      </Flex>
-      <Divider my={4} />
+        </Flex>
     </Box>
   );
 }
