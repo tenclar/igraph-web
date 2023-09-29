@@ -11,7 +11,7 @@ export default function ListaDados() {
     <Text marginTop={"6rem"} textAlign={"center"} fontSize={"2.3rem"} fontWeight={"800"}>
       Inserir Atendimento
     </Text>
-    <Box marginTop={"7rem"}>
+    <Box marginTop={"3rem"}>
       <Text textAlign={"center"} fontSize={"1.2rem"} fontStyle={"italic"} fontWeight={"800"}>
         Central
       </Text>
@@ -57,9 +57,11 @@ export default function ListaDados() {
       </Text>
       <Input as={"textarea"} textAlign={"center"} w={800} h={40} margin={"auto"} bg={"#fffffff"} placeholder={"Algum Comentario"}/>
     </Box>
-    <Link margin={"auto"} textAlign={"center"} position="absolute" href="cadastro/form/" p={3} bgColor={"gray.300"}>
-      Novo
+    <Box marginTop={"2rem"} textAlign={"center"}>
+    <Link margin={"auto"} textAlign={"center"} href="cadastro/form/" p={3} bgColor={"green.400"} color={"#FFFFFF"} fontWeight={1000} >
+      Inserir Dados
     </Link>
+    </Box>
   </>
 );
 }
