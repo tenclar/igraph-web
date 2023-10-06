@@ -2,13 +2,10 @@ import { Footer } from "@/components/Form/Footer";
 import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { Section } from "@/components/Section/Section";
 import {Box, Button, Link, LinkProps, Table, TableCaption,  TableContainer, Tbody,  Td, Text,  Tfoot, Th,  Thead,  Tr,Select, Input } from "@chakra-ui/react";
-import { data } from "autoprefixer";
-import { error } from "console";
 import api from "@/services/api";
 import { useEffect, useState } from "react";
 import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterface";
-import { format } from 'date-fns';
-import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/AtendimentoInterface"; 
+import { inserirDados } from "./funções/inserirDados";
 
 
 export default function Formulario() {
@@ -26,15 +23,7 @@ export default function Formulario() {
   }
 
   const exibirMSG = () => {
-    const currentDate = getCurrentDate();
-    
-    if (dataAtendimento > currentDate) {
-      alert("Erro: Você não pode cadastrar uma data futura.");
-      return;
-      
-    } else {
-      alert("Dados Inseridos");
-    }
+      alert("Formulario apagado");
   }
 
   useEffect(() => {
@@ -108,12 +97,12 @@ export default function Formulario() {
       <Input as={"textarea"} textAlign={"center"} w={800} h={40} margin={"auto"} bg={"#fffffff"} placeholder={"Algum Comentario"}/>
     </Box>
     <Box margin={600} display={"flex"}   marginTop={"2rem"} textAlign={"center"} justifyContent={"center"}>
-    <Link  margin={"auto"}  textAlign={"center"} href="cadastro/form/" p={3} bgColor={"green.400"} color={"#FFFFFF"} fontWeight={1000} onClick={exibirMSG}>
-      Inserir Dados
-    </Link>
-    <Link margin={"auto"}  textAlign={"center"} href="cadastro/form/" p={3} bgColor={"gray.600"} color={"#FFFFFF"} fontWeight={1000} onClick={exibirMSG}>
-      Cancelar
-    </Link>
+   <Button margin={"auto"} textAlign={"center"} p={3} bgColor={"green.400"} color={"#FFFFFF"} fontWeight={1000} onClick={inserirDados}>
+          Inserir Dados
+        </Button>
+        <Button margin={"auto"} textAlign={"center"} p={3} bgColor={"gray.600"} color={"#FFFFFF"} fontWeight={1000} onClick={exibirMSG}>
+          Cancelar
+        </Button>
     </Box>
   </>
 );
