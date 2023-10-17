@@ -6,6 +6,7 @@ import api from "@/services/api";
 import { useEffect, useState } from "react";
 import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterface";
 import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
+import { Comentario } from "@/components/CriacaoDashboard/interfaces/ComentarioInterface";
 
 export default function Formulario() {
   const [unidades, setUnidades] = useState<Unidade[]>([]);
