@@ -1,11 +1,11 @@
 import { Footer } from "@/components/Form/Footer";
 import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { Section } from "@/components/Section/Section";
-import { Box, Button, Input, Select, Text, Textarea,} from "@chakra-ui/react";
+import { Box, Button, Input, Select, Text, Textarea } from "@chakra-ui/react";
 import api from "@/services/api";
 import { useEffect, useState } from "react";
 import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterface";
-import { type } from "os";
+import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
 
 export default function Formulario() {
   const [unidades, setUnidades] = useState<Unidade[]>([]);
@@ -15,7 +15,6 @@ export default function Formulario() {
     getCurrentDate()
   );
   const [comentario, setComentario] = useState<string>("");
-  const [totalAtendimentos, setTotalAtendimentos] = useState<number>(0);
 
   function getCurrentDate() {
     const now = new Date();
@@ -24,8 +23,6 @@ export default function Formulario() {
     const day = String(now.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-
-  
 
   useEffect(() => {
     async function fetchUnidades() {
@@ -48,7 +45,12 @@ export default function Formulario() {
         const data = response.data;
 
         if (data && data.length > 0) {
-          setServicos(data);
+          const servicosComID = data.map((servico : Servico, index: number) => ({
+            ...servico,
+            id: index + 1,
+            quantidade: 0, // Adicione a quantidade inicial como 0
+          }));
+          setServicos(servicosComID);
         }
       } catch (error) {
         console.error(error);
@@ -62,38 +64,26 @@ export default function Formulario() {
   // Função para enviar os dados para o servidor
   async function inserirDadosNoBanco() {
     try {
-      // Calcular a quantidade somando os valores dos serviços
-      const quantidade = servicos.reduce(
-        (acumulador, servico) => acumulador + (servico.quantidade || 0),
-        0
-      );
-      type FormDataProps = {
-        quantidade: number;
-        comentarios: string;
-        data_de_atedimento: Date;
+      const atendimentos = servicos
+        .filter((servico) => servico.quantidade > 0)
+        .map((servico) => ({
+          comentarios: comentario,
+          data_de_atendimento: dataAtendimento,
+          quantidade: servico.quantidade,
+          servicos_id: servico.id,
+          unidades_id: selectedUnidade?.id || null,
+          usuarios_id: 1,
+        }));
 
-      }
+      for (const atendimento of atendimentos) {
+        console.log(atendimento);
+        const response = await api.post("/atendimentos", atendimento);
 
-
-
-      // Preencher os dados para inserção
-      const dadosParaInserir = {
-        comentarios: comentario,
-        data_de_atendimento: dataAtendimento,
-        quantidade: quantidade,
-        servicos_id: 1,
-        unidades_id: selectedUnidade?.id || null, // ID da unidade escolhida
-        usuarios_id: 1, // Manter como nulo por enquanto
-      };
-      
-      // Enviar os dados para o servidor
-      console.log(dadosParaInserir)
-       const response = await api.post("/atendimentos", dadosParaInserir);
-
-      if (response.status === 200) {
-        alert("Dados inseridos com sucesso!");
-      } else {
-        alert("Ocorreu um erro ao inserir os dados no banco.");
+        if (response.status === 200) {
+          alert("Dados inseridos com sucesso!");
+        } else {
+          alert("Ocorreu um erro ao inserir os dados no banco.");
+        }
       }
     } catch (error) {
       console.error(error);
@@ -145,8 +135,8 @@ export default function Formulario() {
           onChange={(e) => setDataAtendimento(e.target.value)}
         />
       </Box>
-      {servicos.map((servico, index) => (
-        <Box key={index} marginTop={"2rem"} textAlign={"center"}>
+      {servicos.map((servico) => (
+        <Box key={servico.id} marginTop={"2rem"} textAlign={"center"}>
           <Text fontSize={"1.2rem"} fontWeight={"800"} fontStyle={"italic"}>
             {servico.nome}
           </Text>
@@ -157,18 +147,15 @@ export default function Formulario() {
             margin={"auto"}
             bg={"#fffffff"}
             placeholder={`Quantos atendimentos de ${servico.nome} ?`}
+            value={servico.quantidade}
             onChange={(e) => {
               const valor = parseInt(e.target.value);
               if (!isNaN(valor)) {
-                const novosValores = [...servicos];
-                novosValores[index].quantidade = valor;
-                setServicos(novosValores);
-                const soma = novosValores.reduce(
-                  (acumulador, servico) =>
-                    acumulador + (servico.quantidade || 0),
-                  0
+                setServicos((prevServicos) =>
+                  prevServicos.map((item) =>
+                    item.id === servico.id ? { ...item, quantidade: valor } : item
+                  )
                 );
-                setTotalAtendimentos(soma);
               }
             }}
           />
@@ -202,11 +189,7 @@ export default function Formulario() {
           bgColor={"green.400"}
           color={"#FFFFFF"}
           fontWeight={1000}
-          onClick={() => {
-            const mensagem = `Central: ${selectedUnidade?.nome || ""}\nData de Atendimento: ${dataAtendimento}\nTotal de Atendimentos: ${totalAtendimentos}\nComentário: ${comentario}`;
-            alert(mensagem);
-            inserirDadosNoBanco();
-          }}
+          onClick={inserirDadosNoBanco}
         >
           Inserir Dados
         </Button>
@@ -217,7 +200,6 @@ export default function Formulario() {
           bgColor={"gray.600"}
           color={"#FFFFFF"}
           fontWeight={1000}
-          
         >
           Cancelar
         </Button>
