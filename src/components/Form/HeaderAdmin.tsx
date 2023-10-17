@@ -57,10 +57,10 @@ export function HeaderAdmin() {
             <PopoverArrow />
             <PopoverBody textAlign="center" >
             <Text mb={1}>
-              <Link href="/ad/cadastro/form/">Inserir novos dados</Link>
+              <Link href="/ad/cadastro/">Inserir novos dados</Link>
             </Text>
             <Text mb={1}>
-              <Link href="/ad/cadastro/">Gerenciar dados</Link>
+              <Link href="/ad/cadastro/form/">Gerenciar dados</Link>
             </Text>
             </PopoverBody>
           </PopoverContent>
