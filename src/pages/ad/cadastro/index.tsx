@@ -85,6 +85,7 @@ export default function Formulario() {
         if (responseAtendimento.status === 201) {
           const atendimentoID = responseAtendimento.data.id;
           console.log("Atendimento inserido com sucesso. ID:", atendimentoID);
+          console.log("Resposta da criação de atendimento:", responseAtendimento);
   
           const novoComentario: Comentarios = {
             comentarios: comentarios,
@@ -103,7 +104,7 @@ export default function Formulario() {
   
           console.log("Resposta da inserção de comentário:", responseComentario);
   
-          if (responseComentario.status === 200) {
+          if (responseComentario.status === 201) {
             console.log("Comentário inserido com sucesso.");
             alert("Dados inseridos com sucesso!");
           } else {
