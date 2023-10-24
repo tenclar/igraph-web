@@ -1,3 +1,4 @@
-export interface Comentario {
-    comentarios:string,
+export interface Comentarios {
+    comentarios:string;
+    atendimentos_id: number;
 }

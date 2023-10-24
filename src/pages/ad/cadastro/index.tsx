@@ -6,7 +6,7 @@ import api from "@/services/api";
 import { useEffect, useState } from "react";
 import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterface";
 import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
-import { Comentario } from "@/components/CriacaoDashboard/interfaces/ComentarioInterface";
+import { Comentarios } from "@/components/CriacaoDashboard/interfaces/ComentarioInterface";
 
 export default function Formulario() {
   const [unidades, setUnidades] = useState<Unidade[]>([]);
@@ -15,7 +15,7 @@ export default function Formulario() {
   const [dataAtendimento, setDataAtendimento] = useState<string>(
     getCurrentDate()
   );
-  const [comentario, setComentario] = useState<string>("");
+  const [comentarios, setComentario] = useState<string>("");
 
   function getCurrentDate() {
     const now = new Date();
@@ -37,6 +37,7 @@ export default function Formulario() {
         setUnidades(data);
       } catch (error) {
         console.error(error);
+        alert("Ocorreu um erro ao buscar as unidades.");
       }
     }
 
@@ -46,7 +47,7 @@ export default function Formulario() {
         const data = response.data;
 
         if (data && data.length > 0) {
-          const servicosComID = data.map((servico : Servico, index: number) => ({
+          const servicosComID = data.map((servico: Servico, index: number) => ({
             ...servico,
             id: index + 1,
             quantidade: 0, // Adicione a quantidade inicial como 0
@@ -55,6 +56,7 @@ export default function Formulario() {
         }
       } catch (error) {
         console.error(error);
+        alert("Ocorreu um erro ao buscar os serviços.");
       }
     }
 
@@ -62,28 +64,55 @@ export default function Formulario() {
     fetchServicos();
   }, []);
 
-  // Função para enviar os dados para o servidor
   async function inserirDadosNoBanco() {
+    
     try {
       const atendimentos = servicos
         .filter((servico) => servico.quantidade > 0)
         .map((servico) => ({
-          comentarios: comentario,
+          comentarios: comentarios,
           data_de_atendimento: dataAtendimento,
           quantidade: servico.quantidade,
           servicos_id: servico.id,
           unidades_id: selectedUnidade?.id || null,
           usuarios_id: 1,
         }));
-
+  
       for (const atendimento of atendimentos) {
-        console.log(atendimento);
-        const response = await api.post("/atendimentos", atendimento);
-
-        if (response.status === 200) {
-          alert("Dados inseridos com sucesso!");
+        console.log("Inserindo atendimento no banco:", atendimento);
+        const responseAtendimento = await api.post("/atendimentos", atendimento);
+        
+        if (responseAtendimento.status === 201) {
+          const atendimentoID = responseAtendimento.data.id;
+          console.log("Atendimento inserido com sucesso. ID:", atendimentoID);
+  
+          const novoComentario: Comentarios = {
+            comentarios: comentarios,
+            atendimentos_id: atendimentoID,
+          };
+  
+          console.log("Inserindo comentário no banco:", novoComentario);
+  
+          // Adicione um log aqui para verificar se a linha acima está sendo executada
+          console.log("Logo antes do api.post('/comentarios')");
+  
+          const responseComentario = await api.post("/comentarios", novoComentario);
+  
+          // Adicione um log aqui para verificar se a linha acima está sendo executada
+          console.log("Logo após o api.post('/comentarios')");
+  
+          console.log("Resposta da inserção de comentário:", responseComentario);
+  
+          if (responseComentario.status === 200) {
+            console.log("Comentário inserido com sucesso.");
+            alert("Dados inseridos com sucesso!");
+          } else {
+            console.log("Ocorreu um erro ao inserir o comentário no banco.");
+            alert("Ocorreu um erro ao inserir o comentário no banco.");
+          }
         } else {
-          alert("Ocorreu um erro ao inserir os dados no banco.");
+          console.log("Ocorreu um erro ao inserir o atendimento no banco.");
+          alert("Ocorreu um erro ao inserir o atendimento no banco.");
         }
       }
     } catch (error) {
@@ -91,6 +120,7 @@ export default function Formulario() {
       alert("Ocorreu um erro ao inserir os dados no banco.");
     }
   }
+  
 
   return (
     <>
