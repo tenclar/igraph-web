@@ -8,6 +8,7 @@ import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterfa
 import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
 import { Comentarios } from "@/components/CriacaoDashboard/interfaces/ComentarioInterface";
 
+
 export default function Formulario() {
   const [unidades, setUnidades] = useState<Unidade[]>([]);
   const [selectedUnidade, setSelectedUnidade] = useState<Unidade | null>(null);
@@ -231,10 +232,12 @@ export default function Formulario() {
           bgColor={"gray.600"}
           color={"#FFFFFF"}
           fontWeight={1000}
+          
         >
           Cancelar
         </Button>
       </Box>
+      <Footer/>
     </>
   );
 }
