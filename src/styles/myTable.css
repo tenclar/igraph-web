@@ -1,0 +1,6 @@
+.myTableHead {
+    position: fixed;
+    max-width: 175vh; /* Defina o valor desejado para max-width */
+    background-color: #000000;
+    /* Adicione outros estilos conforme necessário */
+  }

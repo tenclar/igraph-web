@@ -1,6 +1,6 @@
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Text } from "@chakra-ui/react";
 import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/AtendimentoInterface";
-import { format } from 'date-fns'; // Importe a função format do date-fns
+import { format } from 'date-fns';
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,12 +15,10 @@ const ModalAtendimento: React.FC<ModalProps> = ({ isOpen, onClose, atendimento, 
     return null;
   }
 
-  console.log(atendimento);
-
-  const formattedDate = format(new Date(atendimento.data_de_atendimento), 'dd/MM/yyyy'); // Formate a data
+  const formattedDate = format(new Date(atendimento.data_de_atendimento), 'dd/MM/yyyy');
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="xl" closeOnOverlayClick={false}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader textAlign={"center"}>Detalhes do Atendimento</ModalHeader>
@@ -29,7 +27,7 @@ const ModalAtendimento: React.FC<ModalProps> = ({ isOpen, onClose, atendimento, 
           <Text fontWeight={"bold"}>Central de Atendimento</Text>
           <p>Usuário: {usuarios[atendimento.usuarios_id]}</p>
           <p>Central: {unidades[atendimento.unidades_id]}</p>
-          <p>Data de Atendimento: {formattedDate}</p> {/* Use a data formatada aqui */}
+          <p>Data de Atendimento: {formattedDate}</p>
           <p>Quantidade: {atendimento.quantidade}</p>
         </ModalBody>
       </ModalContent>

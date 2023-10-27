@@ -8,6 +8,8 @@ import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterfa
 import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/AtendimentoInterface";
 import ModalAtendimento from "./ShowAtendimento/ModalAtendimento";
 
+
+
 export default function FormDados() {
   const [atendimentos, setAtendimentos] = useState<AtendimentoData[]>([]);
   const [usuarios, setUsuarios] = useState<{ [key: number]: string }>({});
@@ -72,6 +74,8 @@ export default function FormDados() {
     return index % 2 === 0 ? "#f0f0f0" : "#ffffff";
   };
 
+  
+
   return (
     <>
       <HeaderAdmin />
@@ -80,7 +84,7 @@ export default function FormDados() {
       </Text>
       <Box mx="auto" mt={5} textAlign="center" fontSize="lg" fontWeight="bold" maxW="175vh" h="60vh" border=".125rem solid #000000" borderRadius="md" overflowY="scroll">
         <Table variant="simple">
-          <Thead bgColor={"#000000"}>
+          <Thead maxW="175vh"  bgColor={"#000000"}>
             <Tr>
               <Th color={"#fff"} fontSize={"0.9rem"}>Usuário</Th>
               <Th color={"#fff"} fontSize={"0.9rem"}>Central</Th>
