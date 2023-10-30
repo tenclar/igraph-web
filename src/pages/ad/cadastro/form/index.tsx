@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "@/services/api";
-import { Text, VStack, Box, Table, Thead, Tbody, Tr, Th, Td, Button, color } from "@chakra-ui/react";
+import { Text, VStack, Box, Table, Thead, Tbody, Tr, Th, Td, Button, color, textDecoration } from "@chakra-ui/react";
 import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { format } from "date-fns";
 import { Footer } from "@/components/Form/Footer";
 import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterface";
 import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/AtendimentoInterface";
 import ModalAtendimento from "./ShowAtendimento/ModalAtendimento";
+import { Link } from "@chakra-ui/react";
 
 
 
@@ -18,7 +19,8 @@ export default function FormDados() {
   const [selectedAtendimento, setSelectedAtendimento] = useState<AtendimentoData | null>(null);
 
   const handleOpenModal = (atendimento: AtendimentoData) => {
-    console.log("Abrindo o modal com o atendimento:", atendimento);
+    console.log("Abrindo o modal com o atendimento:", atendimento);  
+  
     setSelectedAtendimento(atendimento);
     setIsModalOpen(true);
   };
@@ -33,6 +35,7 @@ export default function FormDados() {
     async function fetchAtendimentos() {
       try {
         const response = await api.get<AtendimentoData[]>("/atendimentos");
+        
         setAtendimentos(response.data);
       } catch (error) {
         console.error(error);
@@ -64,6 +67,7 @@ export default function FormDados() {
         console.error(error);
       }
     }
+    
 
     fetchAtendimentos();
     fetchUsuarios();
@@ -86,37 +90,51 @@ export default function FormDados() {
         <Table variant="simple">
           <Thead maxW="175vh"  bgColor={"#000000"}>
             <Tr>
-              <Th color={"#fff"} fontSize={"0.9rem"}>Usuário</Th>
+              <Th color={"#fff"} fontSize={"0.9rem"} paddingLeft={10} >Usuário</Th>
               <Th color={"#fff"} fontSize={"0.9rem"}>Central</Th>
-              <Th color={"#fff"} fontSize={"0.9rem"}>Data</Th>
+              <Th color={"#fff"} fontSize={"0.9rem"} paddingLeft={10}>Data</Th>
               <Th color={"#fff"} fontSize={"0.9rem"}>Atendimentos</Th>
-              <Th color={"#fff"} fontSize={"0.9rem"}>Opções</Th>
+              <Th color={"#fff"} fontSize={"0.9rem"} paddingLeft={20} >Opções</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {atendimentos.map((atendimento, index) => (
-              <Tr key={atendimento.id} bgColor={getRowColor(index)} cursor={"pointer"} onClick={() => {
-                handleOpenModal(atendimento);
-              }}>
-                <Td>{usuarios[atendimento.usuarios_id]}</Td>
-                <Td>{unidades[atendimento.unidades_id]}</Td>
-                <Td>{format(new Date(atendimento.data_de_atendimento), "dd/MM/yyyy")}</Td>
-                <Td>{atendimento.quantidade}</Td>
-                <Td>
-                  <Button backgroundColor={"green.400"} onClick={() => {
-                    handleOpenModal(atendimento);
-                  }}>
-                    exibir
-                  </Button>
-                  <Button backgroundColor={"red.500"}>Apagar</Button>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
+  {atendimentos.map((atendimento, index) => (
+    <Tr
+      key={atendimento.id}
+      bgColor={getRowColor(index)}
+      cursor={"pointer"}
+      onClick={() => {
+        handleOpenModal(atendimento);
+      }}
+    >
+      <Td>{usuarios[atendimento.usuarios_id]}</Td>
+      <Td>{unidades[atendimento.unidades_id]}</Td>
+      <Td>{format(new Date(atendimento.data_de_atendimento), "dd/MM/yyyy")}</Td>
+      <Td paddingLeft={20}>{atendimento.quantidade}</Td>
+      <Td>
+        <Button
+          backgroundColor={"blue.400"}
+          margin={1}
+          onClick={() => {
+            handleOpenModal(atendimento);
+          }}
+        >
+          exibir
+        </Button>
+        <Button backgroundColor={"red.500"}>Apagar</Button>
+      </Td>
+    </Tr>
+  ))}
+</Tbody>
         </Table>
       </Box>
+      <Box textAlign={"center"} marginTop={3} marginBottom={100}>
+      <Button backgroundColor={"green.400"} color={"#ffffff"}>
+        <Link href="/ad/cadastro" style={{textDecoration:"none"}} >Inserir atendimento</Link>
+      </Button>
+      </Box>
       <Footer />
-      <ModalAtendimento isOpen={isModalOpen} onClose={handleCloseModal} atendimento={selectedAtendimento} usuarios={usuarios} unidades={unidades}/>
+      <ModalAtendimento isOpen={isModalOpen} onClose={handleCloseModal} atendimento={selectedAtendimento} usuarios={usuarios} unidades={unidades}/>   
     </>
   );
 }

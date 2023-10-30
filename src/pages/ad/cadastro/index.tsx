@@ -208,7 +208,7 @@ export default function Formulario() {
         />
       </Box>
       <Box
-        margin={600}
+        margin={40}
         display={"flex"}
         marginTop={"2rem"}
         textAlign={"center"}

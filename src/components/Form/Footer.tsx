@@ -27,7 +27,7 @@ export function Footer() {
         w={"100%"}
         gap={18}
         maxWidth={1480}
-        h={16}
+        h={14}
         mx="auto"
         px={4}
         align="center"
