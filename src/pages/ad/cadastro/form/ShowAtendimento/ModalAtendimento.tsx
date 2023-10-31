@@ -1,4 +1,3 @@
-
 import {
   Modal,
   ModalOverlay,
@@ -14,6 +13,7 @@ import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/Atendi
 import { format } from "date-fns";
 import api from "@/services/api";
 import { Comentarios } from "@/components/CriacaoDashboard/interfaces/ComentarioInterface";
+import {BsPencilSquare} from "@react-icons/all-files/bs/BsPencilSquare"
 
 interface ModalProps {
   isOpen: boolean;
@@ -82,7 +82,7 @@ const ModalAtendimento: React.FC<ModalProps> = ({
           <p>{atendimento.quantidade}</p>
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Comentários:</Text>
           <Text h={40}>{comentarios?.comentarios || "Esse atendimento não teve comentários registrados" }</Text>
-          <Button backgroundColor={"blue.400"}>Editar</Button>
+          <Button w={"90px"} color={"#ffffff"} backgroundColor={"blue.400"}><BsPencilSquare/></Button>
         </ModalBody>
       </ModalContent>
     </Modal>

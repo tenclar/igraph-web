@@ -88,14 +88,14 @@ export default function FormDados() {
     <>
       <HeaderAdmin />
       <Text marginTop={"4.2rem"} textAlign="center" fontSize="3xl" fontWeight="bold">
-        Lista de Atendimentos
+       Atendimentos
       </Text>
       <Box mx="auto" mt={5} textAlign="center" fontSize="lg" fontWeight="bold" maxW="175vh" h="60vh" border=".125rem solid #000000" borderRadius="md" overflowY="scroll">
         <Table variant="simple">
-          <Thead maxW="175vh"  bgColor={"#000000"}>
-            <Tr>
+          <Thead maxW="175vh"  bgColor={"#000000"} >
+            <Tr >
               <Th color={"#fff"} fontSize={"0.9rem"} paddingLeft={10} >Usuário</Th>
-              <Th color={"#fff"} fontSize={"0.9rem"}>Central</Th>
+              <Th color={"#fff"} fontSize={"0.9rem"} >Central</Th>
               <Th color={"#fff"} fontSize={"0.9rem"} paddingLeft={10}>Data</Th>
               <Th color={"#fff"} fontSize={"0.9rem"}>Atendimentos</Th>
               <Th color={"#fff"} fontSize={"0.9rem"} paddingLeft={20} >Opções</Th>
@@ -128,7 +128,7 @@ export default function FormDados() {
           <BsSearch/>
           
         </Button>
-        <Button w={"90px"} color={"#ffffff"} backgroundColor={"red.500"}><BsFillTrashFill/></Button>
+        <Button w={"90px"} color={"#ffffff"} backgroundColor={"red.500"} ><BsFillTrashFill /></Button>
       </Td>
     </Tr>
   ))}
