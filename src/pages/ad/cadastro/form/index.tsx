@@ -8,6 +8,9 @@ import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterfa
 import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/AtendimentoInterface";
 import ModalAtendimento from "./ShowAtendimento/ModalAtendimento";
 import { Link } from "@chakra-ui/react";
+import {BsSearch} from "@react-icons/all-files/bs/BsSearch"
+import {BsFillTrashFill} from "@react-icons/all-files/bs/BsFillTrashFill"
+
 
 
 
@@ -35,7 +38,8 @@ export default function FormDados() {
     async function fetchAtendimentos() {
       try {
         const response = await api.get<AtendimentoData[]>("/atendimentos");
-        
+        //por enquanto erro vai ficar até eu descobrir o fazer.
+        response.data.sort((a, b) => new Date(b.data_de_atendimento) - new Date(a.data_de_atendimento));
         setAtendimentos(response.data);
       } catch (error) {
         console.error(error);
@@ -83,7 +87,7 @@ export default function FormDados() {
   return (
     <>
       <HeaderAdmin />
-      <Text marginTop={"5rem"} textAlign="center" fontSize="3xl" fontWeight="bold">
+      <Text marginTop={"4.2rem"} textAlign="center" fontSize="3xl" fontWeight="bold">
         Lista de Atendimentos
       </Text>
       <Box mx="auto" mt={5} textAlign="center" fontSize="lg" fontWeight="bold" maxW="175vh" h="60vh" border=".125rem solid #000000" borderRadius="md" overflowY="scroll">
@@ -110,18 +114,21 @@ export default function FormDados() {
       <Td>{usuarios[atendimento.usuarios_id]}</Td>
       <Td>{unidades[atendimento.unidades_id]}</Td>
       <Td>{format(new Date(atendimento.data_de_atendimento), "dd/MM/yyyy")}</Td>
-      <Td paddingLeft={20}>{atendimento.quantidade}</Td>
+      <Td paddingLeft={20}> <Td>{atendimento.servicos_id}</Td> {atendimento.quantidade}</Td>
       <Td>
         <Button
-          backgroundColor={"blue.400"}
+          backgroundColor={"green.500"}
+          color={"#ffffff"}
+          w={"90px"}
           margin={1}
           onClick={() => {
             handleOpenModal(atendimento);
           }}
         >
-          exibir
+          <BsSearch/>
+          
         </Button>
-        <Button backgroundColor={"red.500"}>Apagar</Button>
+        <Button w={"90px"} color={"#ffffff"} backgroundColor={"red.500"}><BsFillTrashFill/></Button>
       </Td>
     </Tr>
   ))}

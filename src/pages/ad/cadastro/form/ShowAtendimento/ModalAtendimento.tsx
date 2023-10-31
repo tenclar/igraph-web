@@ -7,6 +7,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Text,
+  Button,
 } from "@chakra-ui/react";
 import React, {useState} from "react";
 import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/AtendimentoInterface";
@@ -64,23 +65,24 @@ const ModalAtendimento: React.FC<ModalProps> = ({
   
   console.log(comentarios?.comentarios)
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl" closeOnOverlayClick={false}>
+    <Modal  isOpen={isOpen} onClose={onClose} size="xl" closeOnOverlayClick={false}>
       
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader backgroundColor={"#bdbebd"} textAlign={"center"} fontSize={"2rem"} fontWeight={"bold"}>Detalhes do Atendimento</ModalHeader>
+      <ModalOverlay  />
+      <ModalContent borderRadius={"1rem" } border=".125rem solid #000000">
+        <ModalHeader borderRadius={"1rem"} border=".375rem solid #bdbebd" backgroundColor={"#bdbebd"} textAlign={"center"} fontSize={"2rem"} fontWeight={"bold"}>Detalhes do Atendimento</ModalHeader>
         <ModalCloseButton />
         <ModalBody textAlign={"center"}>
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={4}>Central de Atendimento</Text>
           <p>{unidades[atendimento.unidades_id]}</p>
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Usuario Responsavel pela coleta de dados</Text>
           <p>{usuarios[atendimento.usuarios_id]}</p>
-          <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Data do Atendimento:</Text>
+          <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Data do Atendimento</Text>
           <p>{formattedDate}</p>
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Quantidade</Text>
           <p>{atendimento.quantidade}</p>
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Comentários:</Text>
           <Text h={40}>{comentarios?.comentarios || "Esse atendimento não teve comentários registrados" }</Text>
+          <Button backgroundColor={"blue.400"}>Editar</Button>
         </ModalBody>
       </ModalContent>
     </Modal>
