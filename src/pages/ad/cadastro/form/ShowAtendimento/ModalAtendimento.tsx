@@ -34,8 +34,7 @@ const ModalAtendimento: React.FC<ModalProps> = ({
 }) => {
 
   const [comentarios, setComentarios] = useState<Comentarios | undefined>();
-  const [isEditing, setIsEditing] = useState(false); // Estado para controlar o modo de edição da quantidade
-  const [editedQuantidade, setEditedQuantidade] = useState(atendimento?.quantidade || "");
+
   React.useEffect(() => {
     
     async function fetchComentarios() {
@@ -66,17 +65,7 @@ const ModalAtendimento: React.FC<ModalProps> = ({
     "dd/MM/yyyy"
   );
 
-  const handleEditClick = () => {
-    // Ativar o modo de edição quando o botão de edição for clicado
-    setIsEditing(true);
-  };
-
-  const handleSaveClick = () => {
-    // Salvar as alterações e desativar o modo de edição quando o botão de salvar for clicado
-    setIsEditing(false);
-    // Você pode aqui fazer uma solicitação para salvar a quantidade editada na API, se necessário.
-    // Lembre-se de atualizar a quantidade no objeto 'atendimento' também.
-  };
+  
   
   console.log(comentarios?.comentarios)
   return (
