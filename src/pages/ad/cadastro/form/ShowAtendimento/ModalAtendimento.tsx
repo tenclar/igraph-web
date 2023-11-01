@@ -21,6 +21,7 @@ interface ModalProps {
   atendimento: AtendimentoData | null;
   usuarios: { [key: number]: string };
   unidades: { [key: number]: string };
+  servicos: { [key: number]: string };
 }
 
 const ModalAtendimento: React.FC<ModalProps> = ({
@@ -29,12 +30,14 @@ const ModalAtendimento: React.FC<ModalProps> = ({
   atendimento,
   usuarios,
   unidades,
+  servicos,
 }) => {
 
-  const [comentarios, setComentarios] = useState<Comentarios | undefined>(); // Estado para armazenar os comentários
-
+  const [comentarios, setComentarios] = useState<Comentarios | undefined>();
+  const [isEditing, setIsEditing] = useState(false); // Estado para controlar o modo de edição da quantidade
+  const [editedQuantidade, setEditedQuantidade] = useState(atendimento?.quantidade || "");
   React.useEffect(() => {
-    // Função para buscar os comentários quando o modal é aberto
+    
     async function fetchComentarios() {
       if (atendimento) {
         try {
@@ -62,6 +65,18 @@ const ModalAtendimento: React.FC<ModalProps> = ({
     new Date(atendimento.data_de_atendimento),
     "dd/MM/yyyy"
   );
+
+  const handleEditClick = () => {
+    // Ativar o modo de edição quando o botão de edição for clicado
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    // Salvar as alterações e desativar o modo de edição quando o botão de salvar for clicado
+    setIsEditing(false);
+    // Você pode aqui fazer uma solicitação para salvar a quantidade editada na API, se necessário.
+    // Lembre-se de atualizar a quantidade no objeto 'atendimento' também.
+  };
   
   console.log(comentarios?.comentarios)
   return (
@@ -79,6 +94,7 @@ const ModalAtendimento: React.FC<ModalProps> = ({
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Data do Atendimento</Text>
           <p>{formattedDate}</p>
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Quantidade</Text>
+          <p>{servicos[atendimento.servicos_id]}</p>
           <p>{atendimento.quantidade}</p>
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Comentários:</Text>
           <Text h={40}>{comentarios?.comentarios || "Esse atendimento não teve comentários registrados" }</Text>

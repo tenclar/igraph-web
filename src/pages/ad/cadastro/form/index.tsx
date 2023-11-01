@@ -17,6 +17,7 @@ import {BsFillTrashFill} from "@react-icons/all-files/bs/BsFillTrashFill"
 export default function FormDados() {
   const [atendimentos, setAtendimentos] = useState<AtendimentoData[]>([]);
   const [usuarios, setUsuarios] = useState<{ [key: number]: string }>({});
+  const [servicos, setServicos] = useState<{ [key: number]: string }>({});
   const [unidades, setUnidades] = useState<{ [key: number]: string }>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAtendimento, setSelectedAtendimento] = useState<AtendimentoData | null>(null);
@@ -71,11 +72,24 @@ export default function FormDados() {
         console.error(error);
       }
     }
+    async function fetchServicos() {
+      try {
+        const response = await api.get("/servicos");
+        const servicosData: { [key: number]: string } = {};
+        response.data.forEach((servico: { id: number; nome: string }) => {
+          servicosData[servico.id] = servico.nome;
+        });
+        setServicos(servicosData);
+      } catch (error) {
+        console.error(error);
+      }
+    }
     
 
     fetchAtendimentos();
     fetchUsuarios();
     fetchUnidades();
+    fetchServicos();
   }, []);
 
   const getRowColor = (index: number) => {
@@ -114,7 +128,7 @@ export default function FormDados() {
       <Td>{usuarios[atendimento.usuarios_id]}</Td>
       <Td>{unidades[atendimento.unidades_id]}</Td>
       <Td>{format(new Date(atendimento.data_de_atendimento), "dd/MM/yyyy")}</Td>
-      <Td paddingLeft={20}> <Td>{atendimento.servicos_id}</Td> {atendimento.quantidade}</Td>
+      <Td paddingLeft={20}> <Td paddingLeft={-4}>{servicos[atendimento.servicos_id]}</Td> {atendimento.quantidade}</Td>
       <Td>
         <Button
           backgroundColor={"green.500"}
@@ -141,7 +155,7 @@ export default function FormDados() {
       </Button>
       </Box>
       <Footer />
-      <ModalAtendimento isOpen={isModalOpen} onClose={handleCloseModal} atendimento={selectedAtendimento} usuarios={usuarios} unidades={unidades}/>   
+      <ModalAtendimento isOpen={isModalOpen} onClose={handleCloseModal} atendimento={selectedAtendimento} usuarios={usuarios} unidades={unidades} servicos={servicos}/>   
     </>
   );
 }
