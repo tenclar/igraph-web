@@ -1,19 +1,10 @@
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Text,
-  Button,
-} from "@chakra-ui/react";
-import React, {useState} from "react";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Text, Button, Input } from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
 import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/AtendimentoInterface";
 import { format } from "date-fns";
 import api from "@/services/api";
 import { Comentarios } from "@/components/CriacaoDashboard/interfaces/ComentarioInterface";
-import {BsPencilSquare} from "@react-icons/all-files/bs/BsPencilSquare"
+import { BsPencilSquare } from "@react-icons/all-files/bs/BsPencilSquare";
 
 interface ModalProps {
   isOpen: boolean;
@@ -34,9 +25,23 @@ const ModalAtendimento: React.FC<ModalProps> = ({
 }) => {
 
   const [comentarios, setComentarios] = useState<Comentarios | undefined>();
+  const [quantidade, setQuantidade] = useState("");
+  const [comentario, setComentario] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
-  React.useEffect(() => {
-    
+  useEffect(() => {
+    if (atendimento) {
+      setQuantidade(String(atendimento.quantidade));
+    }
+  }, [atendimento]);
+
+  useEffect(() => {
+    if (comentarios) {
+      setComentario(comentarios.comentarios || "");
+    }
+  }, [comentarios]);
+
+  useEffect(() => {
     async function fetchComentarios() {
       if (atendimento) {
         try {
@@ -44,7 +49,6 @@ const ModalAtendimento: React.FC<ModalProps> = ({
             `/comentarios/${atendimento.id}/atendimentos`
           );
           setComentarios(response.data);
-          console.log(response.data)
         } catch (error) {
           console.error(error);
         }
@@ -65,14 +69,10 @@ const ModalAtendimento: React.FC<ModalProps> = ({
     "dd/MM/yyyy"
   );
 
-  
-  
-  console.log(comentarios?.comentarios)
   return (
-    <Modal  isOpen={isOpen} onClose={onClose} size="xl" closeOnOverlayClick={false}>
-      
-      <ModalOverlay  />
-      <ModalContent borderRadius={"1rem" } border=".125rem solid #000000">
+    <Modal isOpen={isOpen} onClose={onClose} size="xl" closeOnOverlayClick={false}>
+      <ModalOverlay />
+      <ModalContent borderRadius={"1rem"} border=".125rem solid #000000">
         <ModalHeader borderRadius={"1rem"} border=".375rem solid #bdbebd" backgroundColor={"#bdbebd"} textAlign={"center"} fontSize={"2rem"} fontWeight={"bold"}>Detalhes do Atendimento</ModalHeader>
         <ModalCloseButton />
         <ModalBody textAlign={"center"}>
@@ -83,11 +83,22 @@ const ModalAtendimento: React.FC<ModalProps> = ({
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Data do Atendimento</Text>
           <p>{formattedDate}</p>
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Quantidade</Text>
-          <p>{servicos[atendimento.servicos_id]}</p>
-          <p>{atendimento.quantidade}</p>
+          {isEditing ? <Input value={quantidade} textAlign={"center"} onChange={(e) => setQuantidade(e.target.value)} /> : <p>{quantidade}</p>}
           <Text fontSize={"1.4rem"} fontWeight={"bold"} marginTop={3}>Comentários:</Text>
-          <Text h={40}>{comentarios?.comentarios || "Esse atendimento não teve comentários registrados" }</Text>
-          <Button w={"90px"} color={"#ffffff"} backgroundColor={"blue.400"}><BsPencilSquare/></Button>
+          {isEditing ? <Input value={comentario} textAlign={"center"} onChange={(e) => setComentario(e.target.value)} p={"40px"} /> : <Text h={40}>{comentario || "Esse atendimento não teve comentários registrados" }</Text>}
+          {isEditing ? (
+            <>
+              <Button w={"90px"} color={"#ffffff"} backgroundColor={"green.400"} margin={1} onClick={() => {
+                // Aqui você pode fazer uma chamada de API para atualizar as informações
+                console.log("Quantidade:", quantidade);
+                console.log("Comentário:", comentario);
+                setIsEditing(false);
+              }}>Salvar</Button>
+              <Button w={"90px"} color={"#ffffff"} backgroundColor={"gray.600"} onClick={() => setIsEditing(false)}>Cancelar</Button>
+            </>
+          ) : (
+            <Button w={"90px"} color={"#ffffff"} backgroundColor={"blue.400"} onClick={() => setIsEditing(true)}><BsPencilSquare /></Button>
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>

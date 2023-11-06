@@ -12,8 +12,6 @@ import {BsSearch} from "@react-icons/all-files/bs/BsSearch"
 import {BsFillTrashFill} from "@react-icons/all-files/bs/BsFillTrashFill"
 
 
-
-
 export default function FormDados() {
   const [atendimentos, setAtendimentos] = useState<AtendimentoData[]>([]);
   const [usuarios, setUsuarios] = useState<{ [key: number]: string }>({});
@@ -34,6 +32,8 @@ export default function FormDados() {
     setSelectedAtendimento(null);
     setIsModalOpen(false);
   };
+  
+  
 
   useEffect(() => {
     async function fetchAtendimentos() {
@@ -121,9 +121,7 @@ export default function FormDados() {
       key={atendimento.id}
       bgColor={getRowColor(index)}
       cursor={"pointer"}
-      onClick={() => {
-        handleOpenModal(atendimento);
-      }}
+      
     >
       <Td>{usuarios[atendimento.usuarios_id]}</Td>
       <Td>{unidades[atendimento.unidades_id]}</Td>
