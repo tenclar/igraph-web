@@ -49,6 +49,7 @@ const ModalAtendimento: React.FC<ModalProps> = ({
             `/comentarios/${atendimento.id}/atendimentos`
           );
           setComentarios(response.data);
+          console.log(comentarios)
         } catch (error) {
           console.error(error);
         }
@@ -88,12 +89,34 @@ const ModalAtendimento: React.FC<ModalProps> = ({
           {isEditing ? <Input value={comentario} textAlign={"center"} onChange={(e) => setComentario(e.target.value)} p={"40px"} /> : <Text h={40}>{comentario || "Esse atendimento não teve comentários registrados" }</Text>}
           {isEditing ? (
             <>
-              <Button w={"90px"} color={"#ffffff"} backgroundColor={"green.400"} margin={1} onClick={() => {
-                // Aqui você pode fazer uma chamada de API para atualizar as informações
-                console.log("Quantidade:", quantidade);
-                console.log("Comentário:", comentario);
-                setIsEditing(false);
-              }}>Salvar</Button>
+              <Button
+                w={"90px"}
+                color={"#ffffff"}
+                backgroundColor={"green.400"}
+                margin={1}
+                onClick={async () => {
+                  try {
+                    // Fazer a chamada de API para atualizar a quantidade
+                    await api.put(`/atendimentos/${atendimento.id}`, {
+                      quantidade: quantidade,
+                    });
+
+                    // Fazer a chamada de API para atualizar os comentários
+                    await api.put(`/comentarios/atendimentos/${atendimento.id}/comentarios`, {
+                      comentarios: comentario,
+                    });
+
+                    // Após as atualizações bem-sucedidas, você pode realizar ações adicionais, se necessário.
+                    setIsEditing(false);
+                    // Ou qualquer outra ação, como recarregar os dados da interface do usuário.
+
+                  } catch (error) {
+                    console.error(error);
+                  }
+                }}
+              >
+                Salvar
+              </Button>
               <Button w={"90px"} color={"#ffffff"} backgroundColor={"gray.600"} onClick={() => setIsEditing(false)}>Cancelar</Button>
             </>
           ) : (
