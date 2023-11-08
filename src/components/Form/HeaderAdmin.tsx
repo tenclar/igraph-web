@@ -16,6 +16,7 @@ const headerStyles = {
 };
 
 const imageStyles = {
+
   width: "80px",
   height: "45px",
 };

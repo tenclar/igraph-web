@@ -120,7 +120,7 @@ export default function FormDados() {
     <Tr
       key={atendimento.id}
       bgColor={getRowColor(index)}
-      cursor={"pointer"}
+      
       
     >
       <Td>{usuarios[atendimento.usuarios_id]}</Td>
@@ -140,7 +140,36 @@ export default function FormDados() {
           <BsSearch/>
           
         </Button>
-        <Button w={"90px"} color={"#ffffff"} backgroundColor={"red.500"} ><BsFillTrashFill /></Button>
+        <Button
+          backgroundColor={"red.500"}
+          color={"#ffffff"}
+          w={"90px"}
+          onClick={async () => {
+            const confirmDelete = window.confirm(
+              "Tem certeza de que deseja excluir este atendimento?"
+            );
+
+            if (confirmDelete) {
+              try {
+                const response = await api.delete(`/atendimentos/${atendimento.id}`);
+
+                if (response.status === 204) {
+                  // Atualize a interface ou faça qualquer outra ação após a exclusão bem-sucedida
+                  alert("Atendimento excluído com sucesso.");
+                  window.location.reload()
+                } else {
+                  // Trate outros códigos de status, se necessário
+                  alert("Ocorreu um erro ao excluir o atendimento.");
+                }
+              } catch (error) {
+                console.error("Erro ao excluir o atendimento:", error);
+                alert("Ocorreu um erro ao excluir o atendimento.");
+              }
+            }
+          }}
+        >
+          <BsFillTrashFill />
+        </Button>
       </Td>
     </Tr>
   ))}
@@ -149,7 +178,7 @@ export default function FormDados() {
       </Box>
       <Box textAlign={"center"} marginTop={3} marginBottom={100}>
       <Button backgroundColor={"green.400"} color={"#ffffff"}>
-        <Link href="/ad/cadastro" style={{textDecoration:"none"}} >Inserir atendimento</Link>
+        <Link href="/ad/cadastro" style={{textDecoration:"none"}} >Novo Atendimento</Link>
       </Button>
       </Box>
       <Footer />

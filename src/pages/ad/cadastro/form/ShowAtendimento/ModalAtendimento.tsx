@@ -100,16 +100,14 @@ const ModalAtendimento: React.FC<ModalProps> = ({
                     await api.put(`/atendimentos/${atendimento.id}`, {
                       quantidade: quantidade,
                     });
-
                     // Fazer a chamada de API para atualizar os comentários
                     await api.put(`/comentarios/atendimentos/${atendimento.id}/comentarios`, {
                       comentarios: comentario,
                     });
-
                     // Após as atualizações bem-sucedidas, você pode realizar ações adicionais, se necessário.
                     setIsEditing(false);
                     // Ou qualquer outra ação, como recarregar os dados da interface do usuário.
-
+                    window.location.reload()
                   } catch (error) {
                     console.error(error);
                   }
