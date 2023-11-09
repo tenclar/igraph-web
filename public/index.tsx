@@ -13,6 +13,7 @@ const HTMLComponent: React.FC = () => {
         <title>Igraph-web</title>
       </Head>
       <Container>
+        
         <Box id="root">
           
         </Box>

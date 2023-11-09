@@ -1,5 +1,5 @@
 import React from "react"
-import { Flex, Box, Button, Text, Divider, Popover,PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody } from "@chakra-ui/react";
+import { Flex, Box, Button, Text, Divider, Popover,PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody} from "@chakra-ui/react";
 import LogoOca from "../assets/oca_logo_verde.png";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Link from "next/link";
@@ -42,6 +42,9 @@ export function Header() {
         <Box style={logoStyles}>
           <img src={LogoOca.src} alt="LogoOca" style={imageStyles} />
         </Box>
+        <Button backgroundColor={"green.400"}>
+          <Link href="/login/" style={{textDecoration:"none"}}>Loguin</Link>
+        </Button>
         </Flex>
     </Box>
   );
