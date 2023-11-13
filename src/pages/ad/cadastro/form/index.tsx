@@ -119,10 +119,9 @@ export default function FormDados() {
   {atendimentos.map((atendimento, index) => (
     <Tr
       key={atendimento.id}
-      bgColor={getRowColor(index)}
-      
-      
+      bgColor={getRowColor(index)} 
     >
+      
       <Td>{usuarios[atendimento.usuarios_id]}</Td>
       <Td>{unidades[atendimento.unidades_id]}</Td>
       <Td>{format(new Date(atendimento.data_de_atendimento), "dd/MM/yyyy")}</Td>

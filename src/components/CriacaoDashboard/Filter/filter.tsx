@@ -4,6 +4,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import Select from "react-select";
 import { Unidade } from "../interfaces/UnidadeInterface";
 import UnidadeGrafico from "../DashboardFiltro/UnidadeGrafico";
+
 interface FilterProps {
   setShowDashboards: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -75,7 +76,7 @@ function Filter({ setShowDashboards }: FilterProps) {
           <Select options={getUnidadesOptions()} value={selectedOption2} onChange={handleOption2Change} />
           {selectedUnidadeId && (
             <Box style={{ width: "80%", height: "800px" }}>
-              <UnidadeGrafico unidadeId={selectedUnidadeId} /> {/* Chama o componente UnidadeGrafico */}
+              <UnidadeGrafico unidadeId={selectedUnidadeId } /> {/* Chama o componente UnidadeGrafico */}
             </Box>
           )}
         </>

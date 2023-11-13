@@ -2,7 +2,10 @@ import React from "react"
 import { Flex, Box, Button, Text, Divider, Popover,PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody } from "@chakra-ui/react";
 import LogoOca from "../assets/oca_logo_verde.png";
 import { IoMdArrowDropdown } from "react-icons/io";
+import { IoPersonCircle } from "@react-icons/all-files/io5/IoPersonCircle";
 import Link from "next/link";
+
+import { getSessionUser } from "@/pages/login";
 
 
 const headerStyles = {
@@ -24,6 +27,9 @@ const imageStyles = {
 const logoStyles = {
   marginLeft: "-10px",
 };
+
+
+const sessionUser = getSessionUser()
 
 
 export function HeaderAdmin() {
@@ -103,14 +109,20 @@ export function HeaderAdmin() {
             <PopoverArrow />
             <PopoverBody textAlign="center" >
             <Text mb={1}>
-              <Link href="">Gerenciar Usuarios</Link>
+              <Link href="/ad/gerenciarUsuarios">Gerenciar Usuarios</Link>
             </Text>
             <Text mb={1}>
               <Link href="">Gerenciar Servicos</Link>
             </Text>
             </PopoverBody>
           </PopoverContent>
-        </Popover>
+          
+          <Button backgroundColor={"green.400"} marginInlineStart={"auto"} color={"#fff"} onClick={() => window.location.href = "/autenticate"}>
+            <IoPersonCircle color="#fff" size={25} />{" "}
+            {sessionUser?.nickname || "" } 
+            
+          </Button>        
+          </Popover>
       </Flex>
       <Divider my={4} />
     </Box>

@@ -111,6 +111,7 @@ const UnidadeGrafico: React.FC<UnidadeGraficoProps> = ({ unidadeId }) => {
       <Box p={8} bg="gray.100" borderRadius={8} pb={4}>
         <Box fontSize="2xl" mb={4}>
         <h1 style={styles.h1}>Atendimentos</h1>  
+        <h1 >nome da Unidade</h1>
         </Box>
         <Chart options={options} series={Object.values(quantities).map((q) => q.parcial)} type="pie" height={300} />
       </Box>
