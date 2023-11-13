@@ -119,7 +119,7 @@ export function HeaderAdmin() {
           
           <Button backgroundColor={"green.400"} marginInlineStart={"auto"} color={"#fff"} onClick={() => window.location.href = "/autenticate"}>
             <IoPersonCircle color="#fff" size={25} />{" "}
-            {sessionUser?.nickname || "" } 
+            {sessionUser?.nome || "" } 
             
           </Button>        
           </Popover>

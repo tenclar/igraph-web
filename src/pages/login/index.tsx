@@ -11,6 +11,7 @@ const imageStyles = {
 
 interface User {
   id: number;
+  nome : string;
   nickname: string;
   password: string;
 }
