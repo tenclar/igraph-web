@@ -43,7 +43,7 @@ export function Header() {
           <img src={LogoOca.src} alt="LogoOca" style={imageStyles} />
         </Box>
         <Button backgroundColor={"green.400"}>
-          <Link href="/login/" style={{textDecoration:"none"}}>Loguin</Link>
+          <Link href="/autenticate/" style={{textDecoration:"none"}}>Loguin</Link>
         </Button>
         </Flex>
     </Box>
