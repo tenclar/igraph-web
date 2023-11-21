@@ -6,5 +6,5 @@ export interface UsuarioData {
     email: string;
     nickname: string;
     nivel: number;
-    status:number;
+    status:string;
 }

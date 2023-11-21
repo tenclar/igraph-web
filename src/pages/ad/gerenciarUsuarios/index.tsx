@@ -18,7 +18,7 @@ export default function GerenciaDeUsuarios() {
         <Button margin={5} w={200} h={100} backgroundColor={"green.500"} color={"#fff"} border=".125rem solid #000000" onClick={onOpen}>
           <ImUserPlus size={"3rem"} /> Add Usuário
         </Button>
-        <Button w={200} margin={15} h={100} backgroundColor={"blue.500"} color={"#fff"} border=".125rem solid #000000">
+        <Button w={200} margin={15} h={100} backgroundColor={"blue.500"} color={"#fff"} border=".125rem solid #000000" onClick={() => window.location.href = "/ad/gerenciarUsuarios/listUser"} >
           <CgUserList size={"3rem"} /> Listar Usuários
         </Button>
         <AddUserModal isOpen={isOpen} onClose={onClose} />
