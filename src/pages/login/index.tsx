@@ -22,9 +22,13 @@ export const setSessionUser = (user: User) => {
 };
 
 export const getSessionUser = (): User | null => {
+  if (typeof window !== 'undefined') {
     const userString = localStorage.getItem('loggedInUser');
     return userString ? JSON.parse(userString) : null;
-  };
+  }
+  return null;
+};
+
 
 export function Login() {
   const [nickname, setNickname] = useState("");
