@@ -57,7 +57,7 @@ export default function ListarUsuarios() {
     <>
       <HeaderAdmin />
       <Text marginTop={"5rem"} textAlign={"center"} fontSize={"3xl"} fontWeight="800">
-        Usuários do Igraph
+        Usuários do iGraph2
       </Text>
       <Box mx="auto" mt={5} textAlign={"center"} fontSize="lg" border="0.225rem solid #000000" borderRadius="md" overflowY={"scroll"} maxW="60vw" maxH={"60vh"}>
         <Table variant="simple">

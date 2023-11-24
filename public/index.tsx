@@ -10,7 +10,7 @@ const HTMLComponent: React.FC = () => {
       <Head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Igraph-web</title>
+        <title>!Graph2</title>
       </Head>
       <Container>
         

@@ -12,7 +12,6 @@ import {
   Stack,
   Select
 } from "@chakra-ui/react";
-import axios from 'axios'; // Importe o axios
 import api from '@/services/api';
 
 interface EditPerfilModalProps {
@@ -41,49 +40,47 @@ const EditPerfilModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setEditedUserData((prev) => ({ ...prev, [name]: value }));
+    setEditedUserData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
     try {
-      // Aqui você pode realizar a chamada de API para atualizar o usuário
-      const response = await api.put(`/api/usuarios/${user.id}`, {
+      const response = await api.put(`/usuarios/${user.id}`, {
         nome: editedUserData.nome,
         nivel: parseInt(editedUserData.nivel),
         status: editedUserData.status,
       });
 
-      // Se a chamada for bem-sucedida, você pode chamar a função onSave
       onSave({
-        id: user.id,
+        ...user,
         nome: editedUserData.nome,
         nivel: parseInt(editedUserData.nivel),
         status: editedUserData.status,
       });
 
-      // Feche o modal após o salvamento
       onClose();
     } catch (error) {
       console.error('Erro ao salvar alterações:', error);
-      // Lógica adicional para lidar com erros, se necessário
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Editar Perfil</ModalHeader>
+      <ModalContent borderRadius={8} border={"2px solid"} >
+        <ModalHeader textAlign={"center"} color={"#fff"} backgroundColor={"gray.400"} borderRadius={8}>Editar Perfil</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Stack spacing={4}>
             <Input
+              textAlign={"center"}
               placeholder="Nome"
               name="nome"
               value={editedUserData.nome}
               onChange={handleInputChange}
             />
             <Select
+              textAlign={"center"}
               placeholder="Nível"
               name="nivel"
               value={editedUserData.nivel}
@@ -93,6 +90,7 @@ const EditPerfilModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user
               <option value="0">Colaborador</option>
             </Select>
             <Select
+            textAlign={"center"}
               placeholder="Status"
               name="status"
               value={editedUserData.status}
