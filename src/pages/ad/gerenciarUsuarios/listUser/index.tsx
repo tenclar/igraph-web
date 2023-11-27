@@ -4,17 +4,26 @@ import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/react";
 import api from "@/services/api";
 import EditarPerfilModal from "./EditPerfilModal";
+import EditarLoginModal from "./EditLoginModal";
+
+
 interface User {
   id: number;
   nome: string;
+  nickname: string
   nivel: number;
   status: string;
 }
+
 
 export default function ListarUsuarios() {
   const [usuarios, setUsuarios] = useState<User[]>([]);
   const [isEditarPerfilModalOpen, setIsEditarPerfilModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isEditarLoginModalOpen, setIsEditarLoginModalOpen] = useState(false);
+  const [selectedLoginUser, setSelectedLoginUser] = useState<User | null>(null);
+
+
 
   useEffect(() => {
     const fetchUsuarios = async () => {
@@ -53,6 +62,28 @@ export default function ListarUsuarios() {
     setIsEditarPerfilModalOpen(false);
   };
 
+  const handleLoginClick = (login: User) => {
+    setSelectedLoginUser(login);
+    setIsEditarLoginModalOpen(true);
+  };
+
+  const handleCloseLoginModal = () => {
+    setIsEditarLoginModalOpen(false);
+  }
+
+
+  const handleSalvarLoginEdicao = (editedLogin: User) => {
+    // Implemente a lógica para salvar as alterações do usuário na API
+    console.log("Salvando alterações de login:", editedLogin);
+    // Atualize a lista de usuários (opcional, dependendo da sua lógica)
+    setUsuarios((prevUsuarios) =>
+      prevUsuarios.map((u) => (u.id === editedLogin.id ? editedLogin : u))
+    );
+    // Feche o modal
+    setIsEditarLoginModalOpen(false);
+  };
+  
+
   return (
     <>
       <HeaderAdmin />
@@ -75,7 +106,7 @@ export default function ListarUsuarios() {
                   <Button backgroundColor={"yellow.400"} margin={"0.3rem"} w={40} onClick={() => handlePerfilClick(usuario)}>
                     Perfil
                   </Button>
-                  <Button backgroundColor={"green.400"} margin={"0.3rem"} w={40}>
+                  <Button backgroundColor={"green.400"} margin={"0.3rem"} w={40} onClick={() => handleLoginClick(usuario)}>
                     Login
                   </Button>
                   <Button backgroundColor={"red.500"} w={40}>
@@ -88,11 +119,16 @@ export default function ListarUsuarios() {
         </Table>
       </Box>
       <Footer />
-
+  
       {/* Renderize o modal de edição de perfil se estiver aberto */}
       {isEditarPerfilModalOpen && selectedUser && (
         <EditarPerfilModal isOpen={isEditarPerfilModalOpen} onClose={handleCloseModal} user={selectedUser} onSave={handleSalvarEdicao} />
       )}
+  
+      {/* Renderize o modal de edição de login se estiver aberto */}
+      {isEditarLoginModalOpen && selectedLoginUser && (
+        <EditarLoginModal isOpen={isEditarLoginModalOpen} onClose={handleCloseLoginModal} user={selectedLoginUser} onSave={handleSalvarLoginEdicao} />
+      )}
     </>
-  );
+  );  
 }

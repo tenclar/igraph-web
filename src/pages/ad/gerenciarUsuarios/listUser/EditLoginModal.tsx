@@ -24,7 +24,7 @@ interface EditPerfilModalProps {
     nivel: number;
     status: string;
   };
-  onSave: (editedUser: {
+  onSave: (editedLogin: {
     id: number;
     nome: string;
     nickname: string;
@@ -33,31 +33,31 @@ interface EditPerfilModalProps {
   }) => void;
 }
 
-const EditPerfilModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user, onSave }) => {
-  const [editedUserData, setEditedUserData] = useState({
-    nome: user.nome,
+const EditarLoginModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user, onSave }) => {
+  const [editedLoginData, setEditedLoginData] = useState({
+    nickname: user.nickname,
     nivel: user.nivel.toString(),
     status: user.status,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setEditedUserData(prev => ({ ...prev, [name]: value }));
+    const { nickname, value } = e.target;
+    setEditedLoginData(prev => ({ ...prev, [nickname]: value }));
   };
 
   const handleSave = async () => {
     try {
       const response = await api.put(`/usuarios/${user.id}`, {
-        nome: editedUserData.nome,
-        nivel: parseInt(editedUserData.nivel),
-        status: editedUserData.status,
+        nickname: editedLoginData.nickname,
+        nivel: parseInt(editedLoginData.nivel),
+        status: editedLoginData.status,
       });
 
       onSave({
         ...user,
-        nome: editedUserData.nome,
-        nivel: parseInt(editedUserData.nivel),
-        status: editedUserData.status,
+        nickname: editedLoginData.nickname,
+        nivel: parseInt(editedLoginData.nivel),
+        status: editedLoginData.status,
       });
 
       onClose();
@@ -70,37 +70,28 @@ const EditPerfilModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <ModalOverlay />
       <ModalContent borderRadius={8} border={"2px solid"} >
-        <ModalHeader textAlign={"center"} color={"#fff"} backgroundColor={"gray.400"} borderRadius={8}>Editar Perfil</ModalHeader>
+        <ModalHeader textAlign={"center"} color={"#fff"} backgroundColor={"gray.400"} borderRadius={8}>Editar Login do Usuario</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Stack spacing={4}>
+            
             <Input
               textAlign={"center"}
               placeholder="Nome"
               name="nome"
-              value={editedUserData.nome}
+              value={editedLoginData.nickname}
               onChange={handleInputChange}
             />
-            <Select
+            
+            <Input
               textAlign={"center"}
-              placeholder="Nível"
-              name="nivel"
-              value={editedUserData.nivel}
-              onChange={handleInputChange}
-            >
-              <option value="1">Administrador</option>
-              <option value="0">Colaborador</option>
-            </Select>
-            <Select
-            textAlign={"center"}
-              placeholder="Status"
-              name="status"
-              value={editedUserData.status}
-              onChange={handleInputChange}
-            >
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
-            </Select>
+              placeholder="Senha"  
+            />
+            <Input
+              textAlign={"center"}
+              placeholder="Confirme a Senha"  
+            />
+            
           </Stack>
         </ModalBody>
         <ModalFooter>
@@ -114,4 +105,4 @@ const EditPerfilModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user
   );
 };
 
-export default EditPerfilModal;
+export default EditarLoginModal;
