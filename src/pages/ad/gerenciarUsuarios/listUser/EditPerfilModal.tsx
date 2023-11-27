@@ -21,6 +21,7 @@ interface EditPerfilModalProps {
     id: number;
     nome: string;
     nickname: string;
+    password: string;
     nivel: number;
     status: string;
   };
@@ -28,6 +29,7 @@ interface EditPerfilModalProps {
     id: number;
     nome: string;
     nickname: string;
+    password: string;
     nivel: number;
     status: string;
   }) => void;
@@ -50,7 +52,7 @@ const EditPerfilModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user
       const response = await api.put(`/usuarios/${user.id}`, {
         nome: editedUserData.nome,
         nivel: parseInt(editedUserData.nivel),
-        status: editedUserData.status,
+        
       });
 
       onSave({

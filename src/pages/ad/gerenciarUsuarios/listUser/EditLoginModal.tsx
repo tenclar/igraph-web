@@ -10,7 +10,8 @@ import {
   Button,
   Input,
   Stack,
-  Select
+  Select,
+  Text
 } from "@chakra-ui/react";
 import api from '@/services/api';
 
@@ -21,6 +22,7 @@ interface EditPerfilModalProps {
     id: number;
     nome: string;
     nickname: string;
+    password: string;
     nivel: number;
     status: string;
   };
@@ -28,6 +30,7 @@ interface EditPerfilModalProps {
     id: number;
     nome: string;
     nickname: string;
+    password: string;
     nivel: number;
     status: string;
   }) => void;
@@ -36,28 +39,40 @@ interface EditPerfilModalProps {
 const EditarLoginModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user, onSave }) => {
   const [editedLoginData, setEditedLoginData] = useState({
     nickname: user.nickname,
-    nivel: user.nivel.toString(),
-    status: user.status,
+    password: user.password.toString(),
+    confirmPassword: "",
+    
   });
 
+  const [passwordMsg, setPasswordMsg] = useState("");
+ 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { nickname, value } = e.target;
-    setEditedLoginData(prev => ({ ...prev, [nickname]: value }));
+    const { name , value } = e.target;
+    setEditedLoginData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
+
+    //VERIFICAR SE SENHA BATEU
+    if(editedLoginData.password !== editedLoginData.confirmPassword) {
+      setPasswordMsg("As senhas não coiciedem");
+      return;
+    } else {
+      setPasswordMsg("As senhas coicidem")
+    }
+
     try {
       const response = await api.put(`/usuarios/${user.id}`, {
         nickname: editedLoginData.nickname,
-        nivel: parseInt(editedLoginData.nivel),
-        status: editedLoginData.status,
+        password: parseInt(editedLoginData.password),
+        
       });
 
       onSave({
         ...user,
         nickname: editedLoginData.nickname,
-        nivel: parseInt(editedLoginData.nivel),
-        status: editedLoginData.status,
+        password: parseInt(editedLoginData.password),
+        
       });
 
       onClose();
@@ -85,13 +100,24 @@ const EditarLoginModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, use
             
             <Input
               textAlign={"center"}
-              placeholder="Senha"  
+              type="password"
+              placeholder="Senha"
+              name="password"
+              value={editedLoginData.password}
+              onChange={handleInputChange} 
             />
             <Input
               textAlign={"center"}
-              placeholder="Confirme a Senha"  
+              type="password"
+              placeholder="Confirme a Senha"
+              name="confirmPassword"
+              value={editedLoginData.confirmPassword}
+              onChange={handleInputChange}  
             />
-            
+            {passwordMsg && (
+              <Text color={passwordMsg.includes("não coicidem") ? "red.500" : "red.500"}>
+                {passwordMsg}
+              </Text>)} 
           </Stack>
         </ModalBody>
         <ModalFooter>
