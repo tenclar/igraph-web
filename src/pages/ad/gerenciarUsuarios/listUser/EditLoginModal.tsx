@@ -36,10 +36,12 @@ interface EditPerfilModalProps {
   }) => void;
 }
 
+
+
 const EditarLoginModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user, onSave }) => {
   const [editedLoginData, setEditedLoginData] = useState({
     nickname: user.nickname,
-    password: user.password.toString(),
+    password: user.password,
     confirmPassword: "",
     
   });
@@ -64,20 +66,22 @@ const EditarLoginModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, use
     try {
       const response = await api.put(`/usuarios/${user.id}`, {
         nickname: editedLoginData.nickname,
-        password: parseInt(editedLoginData.password),
+        password: editedLoginData.password,
         
       });
+      
+      console.log('API Response:', response);
 
       onSave({
         ...user,
         nickname: editedLoginData.nickname,
-        password: parseInt(editedLoginData.password),
-        
+        password: editedLoginData.password,
       });
 
       onClose();
     } catch (error) {
       console.error('Erro ao salvar alterações:', error);
+      
     }
   };
 
@@ -92,8 +96,9 @@ const EditarLoginModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, use
             
             <Input
               textAlign={"center"}
-              placeholder="Nome"
-              name="nome"
+              type='nickname'
+              placeholder="Nickname"
+              name="nickname"
               value={editedLoginData.nickname}
               onChange={handleInputChange}
             />

@@ -110,7 +110,7 @@ export default function ListarUsuarios() {
                   <Button backgroundColor={"green.400"} margin={"0.3rem"} w={40} onClick={() => handleLoginClick(usuario)}>
                     Login
                   </Button>
-                  <Button backgroundColor={"red.500"} w={40}>
+                  <Button backgroundColor={"red.500"} w={40} margin={"0.3rem"}>
                     Desativar
                   </Button>
                 </Td>
