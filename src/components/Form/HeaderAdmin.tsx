@@ -112,7 +112,7 @@ export function HeaderAdmin() {
               <Link href="/ad/gerenciarUsuarios">Gerenciar Usuarios</Link>
             </Text>
             <Text mb={1}>
-              <Link href="">Gerenciar Servicos</Link>
+              <Link href="/ad/gerenciarServicos">Gerenciar Servicos</Link>
             </Text>
             </PopoverBody>
           </PopoverContent>
