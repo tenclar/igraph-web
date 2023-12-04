@@ -1,5 +1,6 @@
 
 export interface UsuarioData {
+   
     id: number;
     nome: string;
     password: string;

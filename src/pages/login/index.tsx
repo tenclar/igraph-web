@@ -33,8 +33,7 @@ export const getSessionUser = (): User | null => {
 export function Login() {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  
+  const [message, setMessage] = useState(""); 
   const router = useRouter();
   
   // Função para obter o usuário da sessão 
@@ -42,20 +41,20 @@ export function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await api.get<User[]>("/usuarios");
+      const response = await api.post("/sessions", {
+        nickname,
+        password
+      });
 
-      const user = response.data.find(
-        (user) => user.nickname === nickname && user.password === password
-      );
+      const {token, user} = response.data
 
-      if (user) {
-        setSessionUser(user); // Armazena o usuário na sessão
-        setMessage("Usuário autorizado");
-        router.push("/ad");
-        console.log(user.nickname)
-      } else {
-        setMessage("Usuário ou senha incorretos");
-      }
+      localStorage.setItem("@Igraph:token", token)
+      localStorage.setItem("@Igraph:user", JSON.stringify(user))
+
+      api.defaults.headers.authorization = "Bearer ${token}";
+
+      setMessage("Usuario autorizado");
+      router.push("/ad")
     } catch (error) {
       console.error("Erro ao fazer login", error);
       setMessage("Erro ao fazer login. Tente novamente.");

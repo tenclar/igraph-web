@@ -17,7 +17,7 @@ export default function gerenciarServicos() {
         <Button margin={5} w={200} h={100} backgroundColor={"green.500"} color={"#fff"} border=".125rem solid #000000" onClick={onOpen}>
         <MdPlaylistAdd size={"3rem"} />Add Serviços
         </Button>
-        <Button w={200} margin={15} h={100} backgroundColor={"blue.500"} color={"#fff"} border=".125rem solid #000000" onClick={() => window.location.href = "/ad/gerenciarUsuarios/listUser"} >
+        <Button w={200} margin={15} h={100} backgroundColor={"blue.500"} color={"#fff"} border=".125rem solid #000000" onClick={() => window.location.href = "/ad/gerenciarServicos/listServicos"} >
         <MdOutlinePlaylistPlay size={"3rem"} /> Listar Serviços
         </Button>
         <AddServicoModal isOpen={isOpen} onClose={onClose}/>
