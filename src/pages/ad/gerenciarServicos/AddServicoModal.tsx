@@ -1,16 +1,4 @@
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    Button,
-    Input,
-    Stack,
-    Text,
-  } from "@chakra-ui/react";
+import {  Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Stack, Text, } from "@chakra-ui/react";
   import { useState } from "react";
   import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
   import api from "@/services/api";
