@@ -4,29 +4,51 @@ import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/react";
 import api from "@/services/api";
 import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
+import EditarServicoModal from "./EditServicoModal";
+import { BsPencilSquare } from "@react-icons/all-files/bs/BsPencilSquare";
+import { BsFillTrashFill } from "@react-icons/all-files/bs/BsFillTrashFill";
 
 
-export default function ListarUsuarios() {
-  const [usuarios, setUsuarios] = useState<Servico[]>([]);
-
+export default function ListarServicos() {
+  const [servico, setServico] = useState<Servico[]>([]);
+  const [isEditarServicoModalOpen, setEditarServicoModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchUsuarios = async () => {
+    const fetchServicos = async () => {
       try {
         const response = await api.get<Servico[]>("/servicos");
-        setUsuarios(response.data);
+        setServico(response.data);
       } catch (error) {
         console.error("Erro ao obter a lista de servicos:", error);
       }
     };
 
-    fetchUsuarios();
+    fetchServicos();
   }, []);
+
+  const handleEditarClick = () => {
+    // Lógica para abrir o modal de edição
+    setEditarServicoModalOpen(true);
+  };
+
+  const handleDeletarClick = async (id: number) => {
+    // Lógica para deletar o serviço
+    try {
+      await api.delete(`/servicos/${id}`);
+      // Atualizar a lista após a exclusão
+      const response = await api.get<Servico[]>("/servicos");
+      setServico(response.data);
+    } catch (error) {
+      console.error("Erro ao deletar o serviço:", error);
+    }
+  };
+  const handleCloseModal = () => {
+    setEditarServicoModalOpen(false)
+  }
 
   const getRowColor = (index: number) => {
     return index % 2 === 0 ? "#f0f0f0" : "#ffffff";
   };
-
 
   return (
     <>
@@ -57,24 +79,30 @@ export default function ListarUsuarios() {
             </Tr>
           </Thead>
           <Tbody>
-            {usuarios.map((usuario, index) => (
-              <Tr key={usuario.id} backgroundColor={getRowColor(index)}>
-                <Td textAlign={"center"}>{usuario.nome}</Td>
+            {servico.map((servico, index) => (
+              <Tr key={servico.id} backgroundColor={getRowColor(index)}>
+                <Td textAlign={"center"}>{servico.nome}</Td>
                 <Td textAlign={"center"}>
                   <Button
                     backgroundColor={"blue.400"}
                     margin={"0.3rem"}
                     w={40}
+                    color={"#fff"}
+                    onClick={() => handleEditarClick()}
                   >
+                    <BsPencilSquare />
                     Editar
                   </Button>
                   <Button
                     backgroundColor={"red.400"}
                     margin={"0.3rem"}
                     w={40}
+                    color={"#fff"}
+                    onClick={() => handleDeletarClick(servico.id)}
                   >
+                    <BsFillTrashFill />
                     Deletar
-                  </Button>          
+                  </Button>
                 </Td>
               </Tr>
             ))}
@@ -82,6 +110,7 @@ export default function ListarUsuarios() {
         </Table>
       </Box>
       <Footer />
+      <EditarServicoModal isOpen={isEditarServicoModalOpen} onClose={handleCloseModal} servico={servico[0]} />
     </>
   );
 }
