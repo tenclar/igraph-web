@@ -2,20 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Stack, Text } from "@chakra-ui/react";
 import api from '@/services/api';
 
-interface EditarServicoModalProps {
+interface DeleteServicoModalProps {
   isOpen: boolean;
   onClose: () => void;
   servico?: {
     id: number;
     nome: string;
   };
-  onSave: (editedServico: {
+  onDelete: (DeleteServico: {
     id: number;
     nome: string;
   }) => void;
 }
 
-const EditarServicoModal: React.FC<EditarServicoModalProps> = ({ isOpen, onClose, servico, onSave }) => {
+const DeleteServicoModal: React.FC<DeleteServicoModalProps> = ({ isOpen, onClose, servico, onDelete }) => {
   const [editServicoData, setEditServicoData] = useState({
     nome: ''
   });
@@ -28,24 +28,17 @@ const EditarServicoModal: React.FC<EditarServicoModalProps> = ({ isOpen, onClose
     });
   }, [servico]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setEditServicoData({
-      ...editServicoData,
-      [name]: value,
-    });
-  };
+ 
 
   const handleSaveChanges = async () => {
     try {
       if (servico) {
-        const response = await api.put(`/servicos/${servico.id}`, {
-          nome: editServicoData.nome,
+        const response = await api.delete(`/servicos/${servico.id}`, {
         });
 
         console.log("API Response", response);
 
-        onSave({
+        onDelete({
           ...servico,
           nome: editServicoData.nome
         });
@@ -62,22 +55,16 @@ const EditarServicoModal: React.FC<EditarServicoModalProps> = ({ isOpen, onClose
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Editar Serviço</ModalHeader>
+        <ModalHeader>Deletar Serviço</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Stack spacing={4}>
-            <Text>Nome do Serviço:</Text>
-            <Input
-              type="text"
-              name="nome"
-              value={editServicoData.nome}
-              onChange={handleInputChange}
-            />
+            <Text>Tem certeza que deseja deletar esse servico?</Text>
           </Stack>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleSaveChanges}>
-            Salvar Alterações
+          <Button colorScheme="red" mr={3} onClick={handleSaveChanges}>
+            Deletar
           </Button>
           <Button colorScheme="gray" onClick={onClose}>
             Cancelar
@@ -88,4 +75,4 @@ const EditarServicoModal: React.FC<EditarServicoModalProps> = ({ isOpen, onClose
   );
 }
 
-export default EditarServicoModal;
+export default DeleteServicoModal;

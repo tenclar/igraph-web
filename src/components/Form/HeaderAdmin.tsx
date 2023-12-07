@@ -32,6 +32,7 @@ const logoStyles = {
 const sessionUser = getSessionUser()
 
 
+
 export function HeaderAdmin() {
   return (
     <Box>
@@ -118,9 +119,8 @@ export function HeaderAdmin() {
           </PopoverContent>
           
           <Button backgroundColor={"green.400"} marginInlineStart={"auto"} color={"#fff"} onClick={() => window.location.href = "/autenticate"}>
-            <IoPersonCircle color="#fff" size={25} />{" "}
-            {sessionUser?.nome || "" } 
-            
+            <IoPersonCircle color="#fff" size={25} />
+          {" "}{sessionUser?.nome || "" }       
           </Button>        
           </Popover>
       </Flex>

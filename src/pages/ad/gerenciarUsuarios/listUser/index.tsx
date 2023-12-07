@@ -96,17 +96,7 @@ export default function ListarUsuarios() {
       <Text marginTop={"5rem"} textAlign={"center"} fontSize={"3xl"} fontWeight="800">
         Usuários do iGraph2
       </Text>
-      <Box
-        mx="auto"
-        mt={5}
-        textAlign={"center"}
-        fontSize="lg"
-        border="0.225rem solid #000000"
-        borderRadius="md"
-        overflowY={"scroll"}
-        maxW="60vw"
-        maxH={"60vh"}
-      >
+      <Box mx="auto" mt={5} textAlign={"center"} fontSize="lg" border="0.225rem solid #000000" borderRadius="md" overflowY={"scroll"} maxW="60vw" maxH={"60vh"}>
         <Table variant="simple">
           <Thead>
             <Tr textAlign={"center"} backgroundColor={"black"}>
@@ -156,18 +146,14 @@ export default function ListarUsuarios() {
       <Footer />
 
       {isEditarPerfilModalOpen && selectedUser && (
-        <EditarPerfilModal
-          isOpen={isEditarPerfilModalOpen}
-          onClose={handleCloseModal}
+        <EditarPerfilModal isOpen={isEditarPerfilModalOpen} onClose={handleCloseModal}
           user={selectedUser}
           onSave={handleSalvarEdicao}
         />
       )}
 
       {isEditarLoginModalOpen && selectedLoginUser && (
-        <EditarLoginModal
-          isOpen={isEditarLoginModalOpen}
-          onClose={handleCloseLoginModal}
+        <EditarLoginModal isOpen={isEditarLoginModalOpen} onClose={handleCloseLoginModal}
           user={selectedLoginUser}
           onSave={handleSalvarLoginEdicao}
         />

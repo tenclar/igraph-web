@@ -5,13 +5,17 @@ import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/r
 import api from "@/services/api";
 import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
 import EditarServicoModal from "./EditServicoModal";
+import DeleteServicoModal from "./DeleteServicoModal";
 import { BsPencilSquare } from "@react-icons/all-files/bs/BsPencilSquare";
 import { BsFillTrashFill } from "@react-icons/all-files/bs/BsFillTrashFill";
-
 
 export default function ListarServicos() {
   const [servico, setServico] = useState<Servico[]>([]);
   const [isEditarServicoModalOpen, setEditarServicoModalOpen] = useState(false);
+  const [servicoParaEditar, setServicoParaEditar] = useState<{ id: number; nome: string } | undefined>(undefined);
+  const [isDeleteServicoModalOPen, setDeleteServicoModalOpen] = useState(false)
+  const [servicoParaDeletar, setServicoParaDeletar] = useState<Servico | undefined>(undefined);
+
 
   useEffect(() => {
     const fetchServicos = async () => {
@@ -26,25 +30,55 @@ export default function ListarServicos() {
     fetchServicos();
   }, []);
 
-  const handleEditarClick = () => {
-    // Lógica para abrir o modal de edição
+  const handleEditarClick = (servicoClicado: Servico) => {
+    setServicoParaEditar(servicoClicado);
     setEditarServicoModalOpen(true);
   };
 
+  const handleDeletarClick = (servicoClicado: Servico) => {
+    setServicoParaDeletar(servicoClicado);
+    setDeleteServicoModalOpen(true)
+  }
+/*
   const handleDeletarClick = async (id: number) => {
-    // Lógica para deletar o serviço
     try {
       await api.delete(`/servicos/${id}`);
-      // Atualizar a lista após a exclusão
-      const response = await api.get<Servico[]>("/servicos");
+      const response = await api.get<Servico[]>(`/servicos/`);
       setServico(response.data);
     } catch (error) {
       console.error("Erro ao deletar o serviço:", error);
     }
   };
-  const handleCloseModal = () => {
-    setEditarServicoModalOpen(false)
+*/
+  
+const handleDeletarServico = async () => {
+  try {
+    if (servicoParaDeletar) {
+      const response = await api.get<Servico[]>(`/servicos`);
+      setServico(response.data);
+      setDeleteServicoModalOpen(false);
+    }
+  } catch (error) {
+    console.error("Erro ao deletar o serviço:", error);
   }
+};
+
+  const handleCloseModal = () => {
+    setEditarServicoModalOpen(false);
+    setDeleteServicoModalOpen(false)
+  };
+
+  const handleSalvarServicoEdicao = (editedServico: Servico) => {
+    try {
+      console.log("Salvando alterações de login:", editedServico);
+      setServico((prevUsuarios) =>
+        prevUsuarios.map((u) => (u.id === editedServico.id ? editedServico : u))
+      );
+      setEditarServicoModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao salvar alterações de login:", error);
+    }
+  };
 
   const getRowColor = (index: number) => {
     return index % 2 === 0 ? "#f0f0f0" : "#ffffff";
@@ -56,17 +90,7 @@ export default function ListarServicos() {
       <Text marginTop={"5rem"} textAlign={"center"} fontSize={"3xl"} fontWeight="800">
         Servicos do iGraph2
       </Text>
-      <Box
-        mx="auto"
-        mt={5}
-        textAlign={"center"}
-        fontSize="lg"
-        border="0.225rem solid #000000"
-        borderRadius="md"
-        overflowY={"scroll"}
-        maxW="60vw"
-        maxH={"60vh"}
-      >
+      <Box mx="auto" mt={5} textAlign={"center"} fontSize="lg" border="0.225rem solid #000000" borderRadius="md" overflowY={"scroll"} maxW="60vw" maxH={"60vh"}>
         <Table variant="simple">
           <Thead>
             <Tr textAlign={"center"} backgroundColor={"black"}>
@@ -88,7 +112,7 @@ export default function ListarServicos() {
                     margin={"0.3rem"}
                     w={40}
                     color={"#fff"}
-                    onClick={() => handleEditarClick()}
+                    onClick={() => handleEditarClick(servico)} 
                   >
                     <BsPencilSquare />
                     Editar
@@ -98,7 +122,7 @@ export default function ListarServicos() {
                     margin={"0.3rem"}
                     w={40}
                     color={"#fff"}
-                    onClick={() => handleDeletarClick(servico.id)}
+                    onClick={() => handleDeletarClick(servico)}
                   >
                     <BsFillTrashFill />
                     Deletar
@@ -110,7 +134,8 @@ export default function ListarServicos() {
         </Table>
       </Box>
       <Footer />
-      <EditarServicoModal isOpen={isEditarServicoModalOpen} onClose={handleCloseModal} servico={servico[0]} />
+      <EditarServicoModal isOpen={isEditarServicoModalOpen} onClose={handleCloseModal} servico={servicoParaEditar} onSave={handleSalvarServicoEdicao}  />
+      <DeleteServicoModal isOpen={isDeleteServicoModalOPen} onClose={handleCloseModal} servico={servicoParaDeletar} onDelete={handleDeletarServico} />
     </>
   );
 }
