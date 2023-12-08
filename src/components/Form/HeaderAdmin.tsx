@@ -73,7 +73,6 @@ export function HeaderAdmin() {
             </PopoverBody>
           </PopoverContent>
         </Popover>
-
         <Popover>
           <PopoverTrigger>
             <Button
@@ -89,7 +88,7 @@ export function HeaderAdmin() {
             <PopoverArrow />
             <PopoverBody textAlign="center" >
             <Text mb={1}>
-              <Link href="">Gerar Planilha</Link>
+              <Link href="/ad/planilha">Gerar Planilha</Link>
             </Text>
             </PopoverBody>
           </PopoverContent>
@@ -116,15 +115,15 @@ export function HeaderAdmin() {
               <Link href="/ad/gerenciarServicos">Gerenciar Servicos</Link>
             </Text>
             </PopoverBody>
-          </PopoverContent>
-          
+          </PopoverContent> 
           <Button backgroundColor={"green.400"} marginInlineStart={"auto"} color={"#fff"} onClick={() => window.location.href = "/autenticate"}>
-            <IoPersonCircle color="#fff" size={25} />
-          {" "}{sessionUser?.nome || "" }       
-          </Button>        
+            <IoPersonCircle color="#fff" size={25} /> 
+          {" "}{sessionUser?.nome || "" }                
+          </Button>    
           </Popover>
       </Flex>
       <Divider my={4} />
     </Box>
+    
   );
 }
