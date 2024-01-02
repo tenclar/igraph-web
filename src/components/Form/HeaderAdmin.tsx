@@ -22,12 +22,12 @@ const imageStyles = {
 
   width: "80px",
   height: "45px",
+  
 };
 
 const logoStyles = {
   marginLeft: "-10px",
 };
-
 
 const sessionUser = getSessionUser()
 
@@ -36,28 +36,13 @@ const sessionUser = getSessionUser()
 export function HeaderAdmin() {
   return (
     <Box>
-      <Flex
-        as="header"
-        w={"100%"}
-        gap={16}
-        maxWidth={"100%"}
-        h={20}
-        mx="auto"
-        px={6}
-        align="center"
-        sx={headerStyles}
-        >
-        <Box style={logoStyles}>
+      <Flex as="header" w={"100%"} gap={16} maxWidth={"100%"} h={20} mx="auto" px={6} align="center" sx={headerStyles}>
+        <Box style={logoStyles} >
           <img src={LogoOca.src} alt="LogoOca" style={imageStyles} />
         </Box>
         <Popover>
           <PopoverTrigger>
-            <Button
-              colorScheme="HeaderButon"
-              color="#000000"
-              fontSize={20}
-              fontWeight="800"
-            >
+            <Button colorScheme="HeaderButon" color="#000000" fontSize={20} fontWeight="800">
               Dados <IoMdArrowDropdown />
             </Button>
           </PopoverTrigger>
@@ -75,12 +60,7 @@ export function HeaderAdmin() {
         </Popover>
         <Popover>
           <PopoverTrigger>
-            <Button
-              colorScheme="HeaderButon"
-              color="#000000"
-              fontSize={20}
-              fontWeight="800"
-            >
+            <Button colorScheme="HeaderButon" color="#000000" fontSize={20} fontWeight="800">
               Relatório <IoMdArrowDropdown />
             </Button>
           </PopoverTrigger>
@@ -96,12 +76,7 @@ export function HeaderAdmin() {
 
         <Popover>
           <PopoverTrigger>
-            <Button
-              colorScheme="HeaderButon"
-              color="#000000"
-              fontSize={20}
-              fontWeight="800"
-            >
+            <Button colorScheme="HeaderButon" color="#000000" fontSize={20} fontWeight="800">
               Configurações <IoMdArrowDropdown />
             </Button>
           </PopoverTrigger>
@@ -118,7 +93,7 @@ export function HeaderAdmin() {
           </PopoverContent> 
           <Button backgroundColor={"green.400"} marginInlineStart={"auto"} color={"#fff"} onClick={() => window.location.href = "/autenticate"}>
             <IoPersonCircle color="#fff" size={25} /> 
-          {" "}{sessionUser?.nome || "" }                
+         {/* {" "}{sessionUser?.nome || "" }     */ }          
           </Button>    
           </Popover>
       </Flex>

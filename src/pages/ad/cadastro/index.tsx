@@ -94,12 +94,10 @@ export default function Formulario() {
           };
   
           console.log("Inserindo comentário no banco:", novoComentario);
-  
           // Adicione um log aqui para verificar se a linha acima está sendo executada
           console.log("Logo antes do api.post('/comentarios')");
   
           const responseComentario = await api.post("/comentarios", novoComentario);
-  
           // Adicione um log aqui para verificar se a linha acima está sendo executada
           console.log("Logo após o api.post('/comentarios')");
   
@@ -157,24 +155,14 @@ export default function Formulario() {
         <Text fontSize={"1.2rem"} fontWeight={"800"} fontStyle={"italic"}>
           Data de Atendimento
         </Text>
-        <Input
-          type={"date"}
-          textAlign={"center"}
-          w={800}
-          margin={"auto"}
-          bg={"#fffffff"}
-          value={dataAtendimento}
-          onChange={(e) => setDataAtendimento(e.target.value)}
-        />
+        <Input type={"date"} textAlign={"center"} w={800} margin={"auto"} bg={"#fffffff"} value={dataAtendimento} onChange={(e) => setDataAtendimento(e.target.value)}/>
       </Box>
       {servicos.map((servico) => (
         <Box key={servico.id} marginTop={"2rem"} textAlign={"center"}>
           <Text fontSize={"1.2rem"} fontWeight={"800"} fontStyle={"italic"}>
             {servico.nome}
           </Text>
-          <Input
-            type={"number"}
-            textAlign={"center"}
+          <Input type={"number"} textAlign={"center"}
             w={800}
             margin={"auto"}
             bg={"#fffffff"}
@@ -198,42 +186,14 @@ export default function Formulario() {
           Comentários
         </Text>
         <Textarea
-          textAlign={"center"}
-          w={800}
-          h={40}
-          margin={"auto"}
-          bg={"#fffffff"}
-          placeholder={"Algum Comentário"}
-          onChange={(e) => setComentario(e.target.value)}
-        />
+          textAlign={"center"} w={800} h={40} margin={"auto"} bg={"#fffffff"} placeholder={"Algum Comentário"} onChange={(e) => setComentario(e.target.value)}/>
       </Box>
-      <Box
-        margin={40}
-        display={"flex"}
-        marginTop={"2rem"}
-        textAlign={"center"}
-        justifyContent={"center"}
-      >
+      <Box margin={40} display={"flex"} marginTop={"2rem"} textAlign={"center"} justifyContent={"center"}>
         <Button
-          margin={"auto"}
-          textAlign={"center"}
-          p={3}
-          bgColor={"green.400"}
-          color={"#FFFFFF"}
-          fontWeight={1000}
-          onClick={inserirDadosNoBanco}
-        >
+          margin={"auto"} textAlign={"center"} p={3} bgColor={"green.400"} color={"#FFFFFF"} fontWeight={1000} onClick={inserirDadosNoBanco} >
           Inserir Dados
         </Button>
-        <Button
-          margin={"auto"}
-          textAlign={"center"}
-          p={3}
-          bgColor={"gray.600"}
-          color={"#FFFFFF"}
-          fontWeight={1000}
-          
-        >
+        <Button margin={"auto"} textAlign={"center"} p={3} bgColor={"gray.600"} color={"#FFFFFF"} fontWeight={1000}>
           Cancelar
         </Button>
       </Box>
