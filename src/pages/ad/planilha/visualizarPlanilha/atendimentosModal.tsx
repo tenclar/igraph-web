@@ -1,12 +1,12 @@
 import React from "react";
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Tr, Th, Table, Thead, Tbody } from "@chakra-ui/react";
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Tr, Th, Table, Thead, Tbody, Td } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom"; // Importe useNavigate
 import GerarPlanilha from "..";
 
 interface AtendimentosModalProps {
   isOpen: boolean;
   onClose: () => void;
-  tableData: Array<{ data_atendimento: string; unidade: string }> | null;
+  tableData: Array<{ data_atendimento: string; unidade: string; quantidade: number; usuario: string}> | null;
 }
 
 
@@ -16,7 +16,7 @@ const AtendimentosModal: React.FC<AtendimentosModalProps> = ({ isOpen, onClose, 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent maxWidth={"145vh"}>
         <ModalHeader>Tabela de Atendimentos</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -24,21 +24,26 @@ const AtendimentosModal: React.FC<AtendimentosModalProps> = ({ isOpen, onClose, 
             <Thead>
               <Tr>
                 <Th>Data do Atendimento</Th>
-                <Th> Unidade</Th>
+                <Th>Unidade</Th>
+                <Th>Quantidade</Th>
+                <Th>Usuario</Th>
               </Tr>
             </Thead>
             <Tbody>
             {tableData?.map((row, index) => (
-  <tr key={index}>
+  <Tr key={index}>
     {row ? (
       <>
-        <td>{row.data_atendimento}</td>
-        <td>{row.unidade}</td>m
+        <Td>{row.data_atendimento}</Td>
+        <Td>{row.unidade}</Td>
+        <Td>{row.quantidade}</Td>
+        <Td>{row.usuario}</Td>
       </>
+      
     ) : (
-      <td colSpan={2}>Sem dados</td>
+      <Td colSpan={2}>Sem dados</Td>
     )}
-  </tr>
+  </Tr>
 ))}
 
             </Tbody>

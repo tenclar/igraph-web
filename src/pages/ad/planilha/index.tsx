@@ -20,7 +20,8 @@ export default function GerarPlanilha() {
   const [unidades, setUnidades] = useState<Unidade[]>([]);
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFim, setDataFim] = useState<string>("");
-  const [tableData, setTableData] = useState<Array<{ data_atendimento: string; unidade: string }> | null>(null);
+  const [usuarios, setUsuarios] = useState<string>("");
+  const [tableData, setTableData] = useState<Array<{ data_atendimento: string; unidade: string; quantidade:number ;usuario: string;}> | null>(null);
 
   
 
@@ -81,6 +82,11 @@ export default function GerarPlanilha() {
       // Formate as datas para o formato YYYY-MM-DD
       const formattedDataInicio = new Date(dataInicio).toISOString().split('T')[0];
       const formattedDataFim = new Date(new Date(dataFim).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const unidadesResponse = await api.get("/unidades");
+      const unidadesData = unidadesResponse.data;
+      const unidadeEncontrada = unidadesData.find((unidade: any) => unidade.id === selectedUnidadeId);
+      const unidadeNome = unidadeEncontrada ? unidadeEncontrada.nome : '';
+      console.log(unidadeNome)
   
       const response = await api.post(`/atendimentos/${selectedUnidadeId}/${formattedDataInicio}/${formattedDataFim}`);
         
@@ -88,7 +94,9 @@ export default function GerarPlanilha() {
         if ('data_atendimento' in atendimento) {
           return {
             data_atendimento: new Date(atendimento.data_atendimento).toLocaleDateString(), // Formate a data como desejado
-            unidade: atendimento.unidade,
+            unidade: unidadeNome,
+            quantidade: atendimento.quantidade,
+            usuario: atendimento.usuarios_id
           };
         }
         return null;
