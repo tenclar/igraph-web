@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterface";
 import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
 import { Comentarios } from "@/components/CriacaoDashboard/interfaces/ComentarioInterface";
+import { getSessionUser } from "@/pages/login";
 
 
 export default function Formulario() {
@@ -64,10 +65,16 @@ export default function Formulario() {
     fetchUnidades();
     fetchServicos();
   }, []);
-
+  
   async function inserirDadosNoBanco() {
-    
     try {
+      const usuarioLogado = getSessionUser();
+      if (!usuarioLogado) {
+        console.error("Usuário não encontrado na sessão.");
+        alert("Erro ao obter informações do usuário logado.");
+        return;
+      }
+  
       const atendimentos = servicos
         .filter((servico) => servico.quantidade > 0)
         .map((servico) => ({
@@ -76,13 +83,13 @@ export default function Formulario() {
           quantidade: servico.quantidade,
           servicos_id: servico.id,
           unidades_id: selectedUnidade?.id || null,
-          usuarios_id: 1,
+          usuarios_id: usuarioLogado.id, // Use o id do usuário logado
         }));
   
       for (const atendimento of atendimentos) {
         console.log("Inserindo atendimento no banco:", atendimento);
         const responseAtendimento = await api.post("/atendimentos", atendimento);
-        
+  
         if (responseAtendimento.status === 201) {
           const atendimentoID = responseAtendimento.data.id;
           console.log("Atendimento inserido com sucesso. ID:", atendimentoID);
@@ -120,6 +127,7 @@ export default function Formulario() {
       alert("Ocorreu um erro ao inserir os dados no banco.");
     }
   }
+  
   
   return (
     <>

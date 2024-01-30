@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import api from "@/services/api";
 import AtendimentosModal from "./atendimentosModal";
 
+
 export default function GerarPlanilhaTotal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedUnidade, setSelectedUnidade] = useState<Unidade | null>(null);
@@ -166,9 +167,15 @@ export default function GerarPlanilhaTotal() {
           onChange={(e) => setDataFim(e.target.value)}
         />
         <Text fontSize={"2xl"} mt={2}>
-        Filtrar por todas as centrais:
+        Selecione os servicos:
         </Text>
-
+        
+        <Box>
+          <Checkbox>Todos de atendimentos em Chat</Checkbox>
+          <Checkbox>Todos de atendimentos em Presencias</Checkbox>
+          <Checkbox>Todos de atendimentos em CallCenter</Checkbox>
+          <Checkbox>Todos de atendimentos em Redes Sociais</Checkbox>
+        </Box>
         <Button
           margin={5}
           w={200}
