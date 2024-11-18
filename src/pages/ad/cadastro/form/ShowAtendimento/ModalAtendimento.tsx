@@ -1,9 +1,9 @@
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Text, Button, Input } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
-import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/AtendimentoInterface";
+import { AtendimentoData } from "@/components/Interfaces/AtendimentoInterface";
 import { format } from "date-fns";
 import api from "@/services/api";
-import { Comentarios } from "@/components/CriacaoDashboard/interfaces/ComentarioInterface";
+import { Comentarios } from "@/components/Interfaces/ComentarioInterface";
 import { BsPencilSquare } from "@react-icons/all-files/bs/BsPencilSquare";
 
 interface ModalProps {

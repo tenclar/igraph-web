@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import api from "@/services/api";
 import { Box, Flex } from "@chakra-ui/react";
 import Select from "react-select";
-import { Unidade } from "../interfaces/UnidadeInterface";
-import UnidadeGrafico from "../DashboardFiltro/UnidadeGrafico";
+import { Unidade } from "../Interfaces/UnidadeInterface";
+import UnidadeGrafico from "../Dashboard/DashboardFiltro/UnidadeGrafico";
 
 interface FilterProps {
   setShowDashboards: React.Dispatch<React.SetStateAction<boolean>>;

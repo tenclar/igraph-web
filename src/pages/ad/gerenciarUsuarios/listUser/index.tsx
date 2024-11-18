@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/react";
 import api from "@/services/api";
-import EditarPerfilModal from "./EditPerfilModal";
-import EditarLoginModal from "./EditLoginModal";
+import EditarPerfilModal from "../ModalUsuarios/EditPerfilModal";
+import EditarLoginModal from "../ModalUsuarios/EditLoginModal";
 
 interface User {
   id: number;
@@ -143,7 +143,7 @@ export default function ListarUsuarios() {
           </Tbody>
         </Table>
       </Box>
-      <Footer />
+     
 
       {isEditarPerfilModalOpen && selectedUser && (
         <EditarPerfilModal isOpen={isEditarPerfilModalOpen} onClose={handleCloseModal}

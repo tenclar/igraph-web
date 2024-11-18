@@ -2,7 +2,7 @@ import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { Footer } from "@/components/Form/Footer";
 import { Box, Button, Text, useDisclosure } from "@chakra-ui/react";
 import { MdPlaylistAdd, MdOutlinePlaylistPlay } from "react-icons/md";
-import AddServicoModal from "./AddServicoModal";
+import AddServicoModal from "./ModalServicos/AddServicoModal";
 
 export default function gerenciarServicos() {
   const {isOpen, onOpen, onClose} = useDisclosure()
@@ -23,10 +23,10 @@ export default function gerenciarServicos() {
         <AddServicoModal isOpen={isOpen} onClose={onClose}/>
         <Box marginTop={"6rem"} mx="auto"  textAlign="center" fontSize="lg" fontWeight="bold" maxW="50vh" h="20vh" border=".125rem solid #000000" borderRadius="md" overflowY="scroll" backgroundColor={"yellow.400"}>
               <Text color={"red.500"} fontSize={"2xl"} fontWeight="bold">ATENÇÃO:</Text>
-              <Text>Ao adiciona um serviço novo no Igraph o mesmo poderar ter atendimentos cadastrados nele</Text>
+              <Text>Ao adicionar um serviço novo no Igraph o mesmo poderar ter atendimentos cadastrados nele</Text>
           </Box>
       </Box>
-      <Footer />
+      
 </>
 
   )

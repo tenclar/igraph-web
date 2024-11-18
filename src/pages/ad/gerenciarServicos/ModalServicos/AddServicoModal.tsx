@@ -1,7 +1,7 @@
 import {  Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Stack, Text, } from "@chakra-ui/react";
-  import { useState } from "react";
-  import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
-  import api from "@/services/api";
+import { useState } from "react";
+import { Servico } from "@/components/Interfaces/ServicosInterface";
+import api from "@/services/api";
   
   interface AddServicoModalProps {
     isOpen: boolean;
@@ -21,7 +21,7 @@ import {  Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody
             
             // Criar um novo objeto com os dados do serviço
             const newServicoData: Servico = {
-          id: 0,
+        
           nome: nomeServico,
           // Adicione outros campos conforme necessário
         };
@@ -35,7 +35,7 @@ import {  Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody
         onClose();
         
   
-        console.log("Resposta da API:", response.data);
+        console.log("Serviço Adicionado");
       } catch (error) {
         console.error("Erro ao adicionar serviço:", error);
       }

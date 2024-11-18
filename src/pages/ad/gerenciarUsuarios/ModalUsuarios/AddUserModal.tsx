@@ -13,7 +13,7 @@ import {
   Text,
   Checkbox,
 } from "@chakra-ui/react";
-import { UsuarioData } from "@/components/CriacaoDashboard/interfaces/UsuarioInterface";
+import { UsuarioData } from "@/components/Interfaces/UsuarioInterface";
 import api from "@/services/api";
 import React, { useState } from "react";
 

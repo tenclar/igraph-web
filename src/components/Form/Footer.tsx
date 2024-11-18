@@ -4,7 +4,7 @@ import LogoSead from "../assets/logoHorizontal.png";
 
 export function Footer() {
   const footerStyles = {
-    position: "fixed",
+    //position: "fixed",
     bottom: 0,
     left: 0,
     right: 0,

@@ -3,7 +3,7 @@ import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { Box, Button, Text, useDisclosure } from "@chakra-ui/react";
 import { ImUserPlus } from "@react-icons/all-files/im/ImUserPlus";
 import { CgUserList } from "@react-icons/all-files/cg/CgUserList";
-import AddUserModal from "./AddUserModal";
+import AddUserModal from "./ModalUsuarios/AddUserModal";
 
 export default function GerenciaDeUsuarios() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -27,7 +27,7 @@ export default function GerenciaDeUsuarios() {
               <Text>Ao adicionar um novo usuario o mesmo tera permissões para inserir e gerenciar os atendimentos dentro da plataforma IGraph.</Text>
           </Box>
       </Box>
-      <Footer />
+     
     </>
   );
 }

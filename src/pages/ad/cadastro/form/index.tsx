@@ -4,8 +4,8 @@ import { Text, VStack, Box, Table, Thead, Tbody, Tr, Th, Td, Button, color, text
 import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { format } from "date-fns";
 import { Footer } from "@/components/Form/Footer";
-import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterface";
-import { AtendimentoData } from "@/components/CriacaoDashboard/interfaces/AtendimentoInterface";
+import { Unidade } from "@/components/Interfaces/UnidadeInterface";
+import { AtendimentoData } from "@/components/Interfaces/AtendimentoInterface";
 import ModalAtendimento from "./ShowAtendimento/ModalAtendimento";
 import { Link } from "@chakra-ui/react";
 import {BsSearch} from "@react-icons/all-files/bs/BsSearch"
@@ -180,7 +180,7 @@ export default function FormDados() {
         <Link href="/ad/cadastro" style={{textDecoration:"none"}} >Novo Atendimento</Link>
       </Button>
       </Box>
-      <Footer />
+     
       <ModalAtendimento isOpen={isModalOpen} onClose={handleCloseModal} atendimento={selectedAtendimento} usuarios={usuarios} unidades={unidades} servicos={servicos}/>   
     </>
   );

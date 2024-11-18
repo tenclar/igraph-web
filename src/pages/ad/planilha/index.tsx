@@ -24,7 +24,7 @@ export default function gerenciarServicos() {
               <Text>Selecione uam opção de qual tipo de atendimento você deseja buscar na planilha</Text>
           </Box>
       </Box>
-      <Footer />
+     
 </>
 
   )

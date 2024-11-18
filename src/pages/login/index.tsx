@@ -1,100 +1,84 @@
-import React, { useState } from "react";
-import { Input, Button, VStack, Text, Box } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import LogoOca from "../../components/assets/oca_logo_verde.png";
-import api from "@/services/api";
+import { useEffect, useState } from 'react';
+import { Box, Heading, FormControl, FormLabel, Input, Button, useToast } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { useAuth } from '../../hooks/useAuth'; // Importando o hook personalizado de autenticação
 
-const imageStyles = {
-  width: "400px",
-  height: "200px",
-};
-
-interface User {
-  id: number;
-  nome : string;
-  nickname: string;
-  password: string;
-}
-
-// Função para setar o usuário na sessão
-export const setSessionUser = (user: User) => {
-  localStorage.setItem('loggedInUser', JSON.stringify(user));
-};
-
-export const getSessionUser = (): User | null => {
-  if (typeof window !== 'undefined') {
-    const userString = localStorage.getItem('loggedInUser');
-    return userString ? JSON.parse(userString) : null;
-  }
-  return null;
-};
-
-
-export function Login() {
-  const [nickname, setNickname] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState(""); 
+export default function Home() {
+  const [nickname, setNickname] = useState('');
+  const [password, setPassword] = useState('');
+  const { login, user } = useAuth(); // Utilizando `login` do hook `useAuth`
+  const toast = useToast();
   const router = useRouter();
-  
-  // Função para obter o usuário da sessão 
 
+  useEffect(() => {
+    if (user) {
+      router.push('/ad'); // Redireciona caso o usuário já esteja logado
+    }
+  }, [user, router]);
 
   const handleLogin = async () => {
-    try {
-      const response = await api.post("/sessions", {
-        nickname,
-        password
+    const result = await login(nickname, password);
+    if (result.sucess) {
+      toast({
+        title: 'Login Successful',
+        description: 'Usuário autorizado! Bem-vindo!',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
       });
-
-      const {token, user} = response.data
-
-      localStorage.setItem("@Igraph:token", token)
-      localStorage.setItem("@Igraph:user", JSON.stringify(user))
-
-      api.defaults.headers.authorization = "Bearer ${token}";
-
-      setMessage("Usuario autorizado");
-      router.push("/ad")
-    } catch (error) {
-      console.error("Erro ao fazer login", error);
-      setMessage("Erro ao fazer login. Tente novamente.");
+      router.push('/ad');
+    } else {
+      toast({
+        title: 'Login Failed',
+        description: result.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
   return (
-    <Box>
-      <Box
-        alignItems={"center"}
-        marginTop={"8rem"}
-        mx={"auto"}
-        textAlign={"center"}
-        h={200}
-        w={400}
-      >
-        <img src={LogoOca.src} alt="LogoOca" style={imageStyles} />
-      </Box>
-      <Text textAlign={"center"}>
-        Sistema Eletrônico de Relatório de Atendimentos
-      </Text>
-      <VStack spacing={4} align="center" mt={8}>
+    <Box p={4} maxW="md" mx="auto" mt={10} borderWidth={1} borderRadius="lg" boxShadow="lg">
+      <Heading as="h1" size="lg" textAlign="center" mb={6}>
+        Igraph Web 3.0
+      </Heading>
+      <FormControl mb={4} textAlign="center">
+        <FormLabel fontSize="larger">Usuário:</FormLabel>
         <Input
+          type="text"
+          width="60%"
           placeholder="Usuário"
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
-          w={400}
         />
+      </FormControl>
+      <FormControl mb={4} textAlign="center">
+        <FormLabel fontSize="larger">Senha:</FormLabel>
         <Input
           type="password"
-          placeholder="Senha"
+          width="60%"
+          placeholder="Digite sua senha"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          w={400}
         />
-        <Button colorScheme="green" onClick={handleLogin}>
+      </FormControl>
+      <Box display="flex" justifyContent="center">
+        <Button
+          margin="10px"
+          width="40%"
+          height="40px"
+          colorScheme="blue"
+          backgroundColor="green"
+          cursor="pointer"
+          color="#fff"
+          borderRadius="15px"
+          onClick={handleLogin}
+        >
           Entrar
         </Button>
-        <Text color="red">{message}</Text> {/* Adiciona cor vermelha à mensagem */}
-      </VStack>
+      </Box>
+      <Box textAlign="center" mt={4}>@Detin</Box>
     </Box>
   );
 }

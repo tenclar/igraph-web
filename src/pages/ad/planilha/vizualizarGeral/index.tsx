@@ -1,7 +1,7 @@
 import { Footer } from "@/components/Form/Footer";
 import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { Box, Button,  Text,  useDisclosure,  Select,  Input,  Checkbox} from "@chakra-ui/react";
-import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterface";
+import { Unidade } from "@/components/Interfaces/UnidadeInterface";
 import { useEffect, useState } from "react";
 import api from "@/services/api";
 import AtendimentosModal from "./atendimentosModal";
@@ -199,7 +199,7 @@ export default function GerarPlanilhaTotal() {
           Visualizar Planilha
         </Button>
       </Box>
-      <Footer />
+     
       <AtendimentosModal
         isOpen={isOpen}
         onClose={onClose}

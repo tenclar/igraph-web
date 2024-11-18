@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import { HeaderAdmin } from "@/components/Form/HeaderAdmin";
 import { Box, Text, Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/react";
 import api from "@/services/api";
-import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
-import EditarServicoModal from "./EditServicoModal";
-import DeleteServicoModal from "./DeleteServicoModal";
+import { Servico } from "@/components/Interfaces/ServicosInterface";
+import EditarServicoModal from "../ModalServicos/EditServicoModal";
+import DeleteServicoModal from "../ModalServicos/DeleteServicoModal";
 import { BsPencilSquare } from "@react-icons/all-files/bs/BsPencilSquare";
 import { BsFillTrashFill } from "@react-icons/all-files/bs/BsFillTrashFill";
 
@@ -133,7 +133,7 @@ const handleDeletarServico = async () => {
           </Tbody>
         </Table>
       </Box>
-      <Footer />
+     
       <EditarServicoModal isOpen={isEditarServicoModalOpen} onClose={handleCloseModal} servico={servicoParaEditar} onSave={handleSalvarServicoEdicao}  />
       <DeleteServicoModal isOpen={isDeleteServicoModalOPen} onClose={handleCloseModal} servico={servicoParaDeletar} onDelete={handleDeletarServico} />
     </>

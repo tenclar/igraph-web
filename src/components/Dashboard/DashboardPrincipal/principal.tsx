@@ -5,7 +5,7 @@ import { ApexOptions } from "apexcharts";
 import { isThisMonth, isYesterday, parseISO } from 'date-fns'; // Importe as funções necessárias do date-fns
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { AtendimentoData } from "../interfaces/AtendimentoInterface";
+import { AtendimentoData } from "../../Interfaces/AtendimentoInterface";
 
 
 

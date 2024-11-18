@@ -4,10 +4,10 @@ import { Section } from "@/components/Section/Section";
 import { Box, Button, Input, Select, Text, Textarea } from "@chakra-ui/react";
 import api from "@/services/api";
 import { useEffect, useState } from "react";
-import { Unidade } from "@/components/CriacaoDashboard/interfaces/UnidadeInterface";
-import { Servico } from "@/components/CriacaoDashboard/interfaces/ServicosInterface";
-import { Comentarios } from "@/components/CriacaoDashboard/interfaces/ComentarioInterface";
-import { getSessionUser } from "@/pages/login";
+import { Unidade } from "@/components/Interfaces/UnidadeInterface";
+import { Servico } from "@/components/Interfaces/ServicosInterface";
+import { Comentarios } from "@/components/Interfaces/ComentarioInterface";
+//import { getSessionUser } from "@/pages/login";
 
 
 export default function Formulario() {
@@ -68,6 +68,7 @@ export default function Formulario() {
   
   async function inserirDadosNoBanco() {
     try {
+      console.log('getSessionUser:', getSessionUser);
       const usuarioLogado = getSessionUser();
       if (!usuarioLogado) {
         console.error("Usuário não encontrado na sessão.");
@@ -205,7 +206,7 @@ export default function Formulario() {
           Cancelar
         </Button>
       </Box>
-      <Footer/>
+     
     </>
   );
 }

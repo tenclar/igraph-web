@@ -5,9 +5,9 @@ import { ApexOptions } from "apexcharts";
 import { isThisMonth, isYesterday, parseISO } from "date-fns";
 import api from "@/services/api";
 import { styles } from "@/styles/config";
-import { AtendimentoData } from "./interfaces/AtendimentoInterface";
-import { Unidade } from "./interfaces/UnidadeInterface";
-import { Servico } from "./interfaces/ServicosInterface";
+import { AtendimentoData } from "../Interfaces/AtendimentoInterface";
+import { Unidade } from "../Interfaces/UnidadeInterface";
+import { Servico } from "../Interfaces/ServicosInterface";
 
 const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
