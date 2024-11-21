@@ -49,7 +49,7 @@ export function HeaderAdmin() {
 
   const handleLogout = () => {
     localStorage.removeItem("loggedInUser");
-    router.push("/autenticate");
+    router.push("/login");
   };
 
   return (

@@ -1,18 +1,4 @@
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  Input,
-  Stack,
-  Select,
-  Text,
-  Checkbox,
-} from "@chakra-ui/react";
+import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Stack, Select, Text, Checkbox} from "@chakra-ui/react";
 import { UsuarioData } from "@/components/Interfaces/UsuarioInterface";
 import api from "@/services/api";
 import React, { useState } from "react";
@@ -35,50 +21,44 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose }) => {
 
   // Adicione uma nova propriedade para o campo de confirmação de senha
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  //FEITO
 
+  //////////////////////////
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
 
-    // Atualize o estado apropriadamente com base no nome do campo
-    if (name === "senha") {
-      setNewUserData((prev) => ({ ...prev, [name]: value }));
-    } else if (name === "confirm") {
-      setConfirmPassword(value);
-    } else {
-      setNewUserData((prev) => ({ ...prev, [name]: value }));
+    setNewUserData((prev) => ({
+      ...prev,
+      [name]: name === "nivel" ? (value === "Sim" ? 1 : 0) : value,
+    }));
+
+    if (name === "confirm") {
+      setConfirmPassword(value); // Atualiza separadamente a confirmação de senha
     }
   };
+  //////////////////////
 
   const handleAddUser = async () => {
     try {
-      // Convertendo o nível de acesso e o status conforme as especificações
-      const nivelAcessoValue = newUserData.nivel === "Sim" ? 1 : 0;
+      //
+        if(newUserData.password !== confirmPassword) {
+          alert("As senhas não coincidems");
+          return;
+        }
 
-      const statusValue =
-        newUserData.status === "Ativo" ? "Ativo" : "Inativo";
+        const userDataToSend: UsuarioData = {
+          ...newUserData,
+          nivel:newUserData.nivel, // Converter "Sim = 1" ou "Não = 0"
+          status: newUserData.status === "Ativo" ? "Ativo" : "Inativo", 
+        }
+        //Realiza procedimento de requisição á API
+        const response = await api.post("/usuarios", userDataToSend);
 
-      // Criando um novo objeto com os dados convertidos
-      const userDataToSend: UsuarioData = {
-        id: 0,
-        nome: newUserData.nome,
-        password: newUserData.password,
-        email: newUserData.email,
-        nickname: newUserData.nickname,
-        nivel: nivelAcessoValue,
-        status: statusValue,
-      };
-
-      // Enviando os dados para a rota /usuarios
-      const response = await api.post("/usuarios", userDataToSend);
-
-      // Lógica adicional, se necessário...
-
-      console.log("Dados enviados com sucesso:", response.data);
-
-      // Feche o modal após adicionar o usuário
-      onClose();
+        console.log("Usuario adicionado com sucesso:", response.data);
+        //Fechamento do modal de Usuario
+        onClose();
     } catch (error) {
       console.error("Erro ao adicionar usuário:", error);
       // Lógica adicional para lidar com o erro, se necessário...
@@ -102,7 +82,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose }) => {
             <Input
               placeholder="Email"
               name="email"
-              value={newUserData.login}
+              value={newUserData.email}
               onChange={handleInputChange}
             />
             <Input
@@ -114,8 +94,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose }) => {
             <Input
               placeholder="Senha"
               type="password"
-              name="senha"
-              value={newUserData.senha}
+              name="password"
+              value={newUserData.password}
               onChange={handleInputChange}
             />
             <Input
@@ -128,7 +108,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose }) => {
             <Select
               placeholder="Esse usuário será administrador?"
               name="nivel"
-              value={newUserData.nivel}
+              value={newUserData.nivel === 1? "Sim" : "Não"}
               onChange={handleInputChange}
             >
               <option value="Sim">Sim</option>
