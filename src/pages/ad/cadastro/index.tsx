@@ -7,13 +7,21 @@ import { useEffect, useState } from "react";
 import { Unidade } from "@/components/Interfaces/UnidadeInterface";
 import { Servico } from "@/components/Interfaces/ServicosInterface";
 import { Comentarios } from "@/components/Interfaces/ComentarioInterface";
-//import { getSessionUser } from "@/pages/login";
 
+interface Usuario {
+  id: number;
+  nome: string;
+}
+
+function getSessionUser(): Usuario | null {
+  return { id: 1, nome: "Usuário Exemplo" }; // Simula um usuário logado
+}
 
 export default function Formulario() {
   const [unidades, setUnidades] = useState<Unidade[]>([]);
   const [selectedUnidade, setSelectedUnidade] = useState<Unidade | null>(null);
-  const [servicos, setServicos] = useState<any[]>([]);
+  const [servicos, setServicos] = useState<Servico[]>([]);
+  const [quantidades, setQuantidades] = useState<{ [id: number]: number }>({});
   const [dataAtendimento, setDataAtendimento] = useState<string>(
     getCurrentDate()
   );
@@ -32,11 +40,8 @@ export default function Formulario() {
       try {
         const response = await api.get("/unidades");
         const data = response.data;
-
-        if (data && data.length > 0) {
-          setSelectedUnidade(data[0]); // Seleciona a primeira unidade como padrão
-        }
         setUnidades(data);
+        if (data && data.length > 0) setSelectedUnidade(data[0]); // Seleciona a primeira unidade como padrão
       } catch (error) {
         console.error(error);
         alert("Ocorreu um erro ao buscar as unidades.");
@@ -47,15 +52,7 @@ export default function Formulario() {
       try {
         const response = await api.get("/servicos");
         const data = response.data;
-
-        if (data && data.length > 0) {
-          const servicosComID = data.map((servico: Servico, index: number) => ({
-            ...servico,
-            id: index + 1,
-            quantidade: 0, // Adicione a quantidade inicial como 0
-          }));
-          setServicos(servicosComID);
-        }
+        setServicos(data);
       } catch (error) {
         console.error(error);
         alert("Ocorreu um erro ao buscar os serviços.");
@@ -65,62 +62,53 @@ export default function Formulario() {
     fetchUnidades();
     fetchServicos();
   }, []);
-  
+
   async function inserirDadosNoBanco() {
     try {
-      console.log('getSessionUser:', getSessionUser);
       const usuarioLogado = getSessionUser();
       if (!usuarioLogado) {
         console.error("Usuário não encontrado na sessão.");
         alert("Erro ao obter informações do usuário logado.");
         return;
       }
-  
-      const atendimentos = servicos
-        .filter((servico) => servico.quantidade > 0)
-        .map((servico) => ({
+
+      const atendimentos = Object.entries(quantidades)
+        .filter(([, quantidade]) => quantidade > 0) // Apenas quantidades maiores que zero
+        .map(([servicoId, quantidade]) => ({
           comentarios: comentarios,
           data_de_atendimento: dataAtendimento,
-          quantidade: servico.quantidade,
-          servicos_id: servico.id,
+          quantidade,
+          servicos_id: parseInt(servicoId, 10),
           unidades_id: selectedUnidade?.id || null,
-          usuarios_id: usuarioLogado.id, // Use o id do usuário logado
+          usuarios_id: usuarioLogado.id,
         }));
-  
+
       for (const atendimento of atendimentos) {
         console.log("Inserindo atendimento no banco:", atendimento);
         const responseAtendimento = await api.post("/atendimentos", atendimento);
-  
+
         if (responseAtendimento.status === 201) {
           const atendimentoID = responseAtendimento.data.id;
           console.log("Atendimento inserido com sucesso. ID:", atendimentoID);
-          console.log("Resposta da criação de atendimento:", responseAtendimento);
-  
+
           const novoComentario: Comentarios = {
             comentarios: comentarios,
             atendimentos_id: atendimentoID,
           };
-  
+
           console.log("Inserindo comentário no banco:", novoComentario);
-          // Adicione um log aqui para verificar se a linha acima está sendo executada
-          console.log("Logo antes do api.post('/comentarios')");
-  
           const responseComentario = await api.post("/comentarios", novoComentario);
-          // Adicione um log aqui para verificar se a linha acima está sendo executada
-          console.log("Logo após o api.post('/comentarios')");
-  
-          console.log("Resposta da inserção de comentário:", responseComentario);
-  
+
           if (responseComentario.status === 201) {
             console.log("Comentário inserido com sucesso.");
             alert("Dados inseridos com sucesso!");
           } else {
-            console.log("Ocorreu um erro ao inserir o comentário no banco.");
-            alert("Ocorreu um erro ao inserir o comentário no banco.");
+            console.error("Erro ao inserir o comentário no banco.");
+            alert("Erro ao inserir o comentário.");
           }
         } else {
-          console.log("Ocorreu um erro ao inserir o atendimento no banco.");
-          alert("Ocorreu um erro ao inserir o atendimento no banco.");
+          console.error("Erro ao inserir o atendimento no banco.");
+          alert("Erro ao inserir o atendimento.");
         }
       }
     } catch (error) {
@@ -128,8 +116,7 @@ export default function Formulario() {
       alert("Ocorreu um erro ao inserir os dados no banco.");
     }
   }
-  
-  
+
   return (
     <>
       <HeaderAdmin />
@@ -153,8 +140,8 @@ export default function Formulario() {
             setSelectedUnidade(selectedUnit || null);
           }}
         >
-          {unidades.map((unidade, index) => (
-            <option key={index} value={unidade.nome}>
+          {unidades.map((unidade) => (
+            <option key={unidade.id} value={unidade.nome}>
               {unidade.nome}
             </option>
           ))}
@@ -164,27 +151,36 @@ export default function Formulario() {
         <Text fontSize={"1.2rem"} fontWeight={"800"} fontStyle={"italic"}>
           Data de Atendimento
         </Text>
-        <Input type={"date"} textAlign={"center"} w={800} margin={"auto"} bg={"#fffffff"} value={dataAtendimento} onChange={(e) => setDataAtendimento(e.target.value)}/>
+        <Input
+          type={"date"}
+          textAlign={"center"}
+          w={800}
+          margin={"auto"}
+          bg={"#fffffff"}
+          value={dataAtendimento}
+          onChange={(e) => setDataAtendimento(e.target.value)}
+        />
       </Box>
       {servicos.map((servico) => (
         <Box key={servico.id} marginTop={"2rem"} textAlign={"center"}>
           <Text fontSize={"1.2rem"} fontWeight={"800"} fontStyle={"italic"}>
             {servico.nome}
           </Text>
-          <Input type={"number"} textAlign={"center"}
+          <Input
+            type={"number"}
+            textAlign={"center"}
             w={800}
             margin={"auto"}
             bg={"#fffffff"}
             placeholder={`Quantos atendimentos de ${servico.nome} ?`}
-            value={servico.quantidade}
+            value={quantidades[servico.id] || ""}
             onChange={(e) => {
-              const valor = parseInt(e.target.value);
+              const valor = parseInt(e.target.value, 10);
               if (!isNaN(valor)) {
-                setServicos((prevServicos) =>
-                  prevServicos.map((item) =>
-                    item.id === servico.id ? { ...item, quantidade: valor } : item
-                  )
-                );
+                setQuantidades((prev) => ({
+                  ...prev,
+                  [servico.id]: valor,
+                }));
               }
             }}
           />
@@ -195,18 +191,44 @@ export default function Formulario() {
           Comentários
         </Text>
         <Textarea
-          textAlign={"center"} w={800} h={40} margin={"auto"} bg={"#fffffff"} placeholder={"Algum Comentário"} onChange={(e) => setComentario(e.target.value)}/>
+          textAlign={"center"}
+          w={800}
+          h={40}
+          margin={"auto"}
+          bg={"#fffffff"}
+          placeholder={"Algum Comentário"}
+          onChange={(e) => setComentario(e.target.value)}
+        />
       </Box>
-      <Box margin={40} display={"flex"} marginTop={"2rem"} textAlign={"center"} justifyContent={"center"}>
+      <Box
+        margin={40}
+        display={"flex"}
+        marginTop={"2rem"}
+        textAlign={"center"}
+        justifyContent={"center"}
+      >
         <Button
-          margin={"auto"} textAlign={"center"} p={3} bgColor={"green.400"} color={"#FFFFFF"} fontWeight={1000} onClick={inserirDadosNoBanco} >
+          margin={"auto"}
+          textAlign={"center"}
+          p={3}
+          bgColor={"green.400"}
+          color={"#FFFFFF"}
+          fontWeight={1000}
+          onClick={inserirDadosNoBanco}
+        >
           Inserir Dados
         </Button>
-        <Button margin={"auto"} textAlign={"center"} p={3} bgColor={"gray.600"} color={"#FFFFFF"} fontWeight={1000}>
+        <Button
+          margin={"auto"}
+          textAlign={"center"}
+          p={3}
+          bgColor={"gray.600"}
+          color={"#FFFFFF"}
+          fontWeight={1000}
+        >
           Cancelar
         </Button>
       </Box>
-     
     </>
   );
 }

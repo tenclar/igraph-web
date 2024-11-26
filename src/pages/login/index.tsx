@@ -20,7 +20,7 @@ export default function Home() {
     const result = await login(nickname, password);
     if (result.sucess) {
       toast({
-        title: 'Login Successful',
+        title: 'Login feito com Sucesso!',
         description: 'Usuário autorizado! Bem-vindo!',
         status: 'success',
         duration: 5000,

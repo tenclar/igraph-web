@@ -122,8 +122,8 @@ export default function FormDados() {
       bgColor={getRowColor(index)} 
     >
       
-      <Td>{usuarios[atendimento.usuarios_id]}</Td>
-      <Td>{unidades[atendimento.unidades_id]}</Td>
+      <Td>{usuarios[atendimento.usuarios_id] || "Não Encontrado"}</Td>
+      <Td>{unidades[atendimento.unidades_id] || "Não Encontrado"}</Td>
       <Td>{format(new Date(atendimento.data_de_atendimento), "dd/MM/yyyy")}</Td>
       <Td paddingLeft={20}> <Td paddingLeft={-4}>{servicos[atendimento.servicos_id]}</Td> {atendimento.quantidade}</Td>
       <Td>
