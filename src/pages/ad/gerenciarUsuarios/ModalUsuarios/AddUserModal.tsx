@@ -1,4 +1,16 @@
-import {Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, Stack, Select, Text, Checkbox} from "@chakra-ui/react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Input,
+  Stack,
+  Select,
+} from "@chakra-ui/react";
 import { UsuarioData } from "@/components/Interfaces/UsuarioInterface";
 import api from "@/services/api";
 import React, { useState } from "react";
@@ -15,61 +27,73 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose }) => {
     password: "",
     email: "",
     nickname: "",
-    nivel: 0,
-    status: "",
+    nivel: false,
+    status: false,
   });
 
-  // Adicione uma nova propriedade para o campo de confirmação de senha
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  //FEITO
 
-  //////////////////////////
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
 
-    setNewUserData((prev) => ({
-      ...prev,
-      [name]: name === "nivel" ? (value === "Sim" ? 1 : 0) : value,
-    }));
-
     if (name === "confirm") {
-      setConfirmPassword(value); // Atualiza separadamente a confirmação de senha
+      setConfirmPassword(value);
+    } else {
+      setNewUserData((prev) => ({
+        ...prev,
+        [name]: name === "nivel" || name === "status" ? value === "true" : value,
+      }));
     }
   };
-  //////////////////////
 
   const handleAddUser = async () => {
     try {
-      //
-        if(newUserData.password !== confirmPassword) {
-          alert("As senhas não coincidems");
-          return;
-        }
+      if (newUserData.password !== confirmPassword) {
+        alert("As senhas não coincidem!");
+        return;
+      }
 
-        const userDataToSend: UsuarioData = {
-          ...newUserData,
-          nivel:newUserData.nivel, // Converter "Sim = 1" ou "Não = 0"
-          status: newUserData.status === "Ativo" ? "Ativo" : "Inativo", 
-        }
-        //Realiza procedimento de requisição á API
-        const response = await api.post("/usuarios", userDataToSend);
+      const userDataToSend: UsuarioData = {
+        ...newUserData,
+        nivel: !!newUserData.nivel,
+        status: !!newUserData.status,
+      };
 
-        console.log("Usuario adicionado com sucesso:", response.data);
-        //Fechamento do modal de Usuario
-        onClose();
+      const response = await api.post("/usuarios", userDataToSend);
+      console.log("Usuário adicionado com sucesso:", response.data);
+      onClose();
+
+      // Limpar os dados do formulário após adicionar com sucesso
+      setNewUserData({
+        id: 0,
+        nome: "",
+        password: "",
+        email: "",
+        nickname: "",
+        nivel: false,
+        status: false,
+      });
+      setConfirmPassword("");
     } catch (error) {
       console.error("Erro ao adicionar usuário:", error);
-      // Lógica adicional para lidar com o erro, se necessário...
+      alert("Erro ao adicionar o usuário. Tente novamente.");
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false} >
+    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader backgroundColor={"gray.400"} fontSize={"2xl"} textAlign={"center"} color={"#fff"}>Adicionar Novo Usuário</ModalHeader>
+        <ModalHeader
+          backgroundColor="gray.400"
+          fontSize="2xl"
+          textAlign="center"
+          color="#fff"
+        >
+          Adicionar Novo Usuário
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Stack spacing={4}>
@@ -108,22 +132,20 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose }) => {
             <Select
               placeholder="Esse usuário será administrador?"
               name="nivel"
-              value={newUserData.nivel === 1? "Sim" : "Não"}
+              value={newUserData.nivel.toString()}
               onChange={handleInputChange}
             >
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
+              <option value="true">Sim</option>
+              <option value="false">Não</option>
             </Select>
-
-            {/* Selector para Status */}
             <Select
               placeholder="Selecione o Status"
               name="status"
-              value={newUserData.status}
+              value={newUserData.status.toString()}
               onChange={handleInputChange}
             >
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
+              <option value="true">Ativo</option>
+              <option value="false">Inativo</option>
             </Select>
           </Stack>
         </ModalBody>

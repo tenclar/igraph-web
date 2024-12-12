@@ -21,18 +21,20 @@ interface EditPerfilModalProps {
   user: {
     id: number;
     nome: string;
+    email:string;
     nickname: string;
     password: string;
-    nivel: number;
-    status: string;
+    nivel: boolean;
+    status: boolean;
   };
   onSave: (editedLogin: {
     id: number;
     nome: string;
+    email: string;
     nickname: string;
     password: string;
-    nivel: number;
-    status: string;
+    nivel: boolean;
+    status: boolean;
   }) => void;
 }
 
@@ -41,7 +43,8 @@ interface EditPerfilModalProps {
 const EditarLoginModal: React.FC<EditPerfilModalProps> = ({ isOpen, onClose, user, onSave }) => {
   const [editedLoginData, setEditedLoginData] = useState({
     nickname: user.nickname,
-    password: user.password,
+    email: user.email,
+    password: "",
     confirmPassword: "",
     
   });

@@ -6,6 +6,6 @@ export interface UsuarioData {
     password: string;
     email: string;
     nickname: string;
-    nivel: number;
-    status:string;
+    nivel: boolean;
+    status: boolean;
 }
