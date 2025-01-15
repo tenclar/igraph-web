@@ -11,177 +11,101 @@ import { Link } from "@chakra-ui/react";
 import {BsSearch} from "@react-icons/all-files/bs/BsSearch"
 import {BsFillTrashFill} from "@react-icons/all-files/bs/BsFillTrashFill"
 
-
 export default function FormDados() {
-  const [atendimentos, setAtendimentos] = useState<AtendimentoData[]>([]);
+  const [atendimentos, setAtendimentos] = useState([]);
   const [usuarios, setUsuarios] = useState<{ [key: number]: string }>({});
   const [servicos, setServicos] = useState<{ [key: number]: string }>({});
   const [unidades, setUnidades] = useState<{ [key: number]: string }>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAtendimento, setSelectedAtendimento] = useState<AtendimentoData | null>(null);
-
-  const handleOpenModal = (atendimento: AtendimentoData) => {
-    console.log("Abrindo o modal com o atendimento:", atendimento);  
-  
-    setSelectedAtendimento(atendimento);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    console.log("Fechando o modal");
-    setSelectedAtendimento(null);
-    setIsModalOpen(false);
-  };
-  
-  
+  const [selectedAtendimento, setSelectedAtendimento] = useState(null);
 
   useEffect(() => {
-    async function fetchAtendimentos() {
+    const fetchData = async () => {
       try {
-        const response = await api.get<AtendimentoData[]>("/atendimentos");
-        //por enquanto erro vai ficar até eu descobrir o fazer.
-        response.data.sort((a, b) => new Date(b.data_de_atendimento) - new Date(a.data_de_atendimento));
-        setAtendimentos(response.data);
+        const [atendimentosRes, usuariosRes, unidadesRes, servicosRes] = await Promise.all([
+          api.get("/atendimentos"),
+          api.get("/usuarios"),
+          api.get("/unidades"),
+          api.get("/servicos"),
+        ]);
+        
+        setAtendimentos(atendimentosRes.data.sort((a, b) => new Date(b.data_de_atendimento) - new Date(a.data_de_atendimento)));
+        setUsuarios(usuariosRes.data.reduce((acc: any, usuario: any) => ({ ...acc, [usuario.id]: usuario.nome }), {}));
+        setUnidades(unidadesRes.data.reduce((acc: any, unidade: any) => ({ ...acc, [unidade.id]: unidade.nome }), {}));
+        setServicos(servicosRes.data.reduce((acc: any, servico: any) => ({ ...acc, [servico.id]: servico.nome }), {}));
       } catch (error) {
-        console.error(error);
+        console.error("Erro ao buscar dados", error);
       }
-    }
-
-    async function fetchUsuarios() {
-      try {
-        const response = await api.get("/usuarios");
-        const usuariosData: { [key: number]: string } = {};
-        response.data.forEach((usuario: { id: number; nome: string }) => {
-          usuariosData[usuario.id] = usuario.nome;
-        });
-        setUsuarios(usuariosData);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    async function fetchUnidades() {
-      try {
-        const response = await api.get<Unidade[]>("/unidades");
-        const unidadesData: { [key: number]: string } = {};
-        response.data.forEach((unidade) => {
-          unidadesData[unidade.id] = unidade.nome;
-        });
-        setUnidades(unidadesData);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    async function fetchServicos() {
-      try {
-        const response = await api.get("/servicos");
-        const servicosData: { [key: number]: string } = {};
-        response.data.forEach((servico: { id: number; nome: string }) => {
-          servicosData[servico.id] = servico.nome;
-        });
-        setServicos(servicosData);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    
-
-    fetchAtendimentos();
-    fetchUsuarios();
-    fetchUnidades();
-    fetchServicos();
+    };
+    fetchData();
   }, []);
 
-  const getRowColor = (index: number) => {
-    return index % 2 === 0 ? "#f0f0f0" : "#ffffff";
-  };
+  const getRowColor = (index: number) => (index % 2 === 0 ? "#f0f0f0" : "#ffffff");
 
-  
+  const handleDelete = async (id: number) => {
+    if (window.confirm("Tem certeza de que deseja excluir este atendimento?")) {
+      try {
+        const response = await api.delete(`/atendimentos/${id}`);
+        if (response.status === 204) {
+          alert("Atendimento excluído com sucesso.");
+          setAtendimentos(atendimentos.filter((atendimento: any) => atendimento.id !== id));
+        } else {
+          alert("Erro ao excluir atendimento.");
+        }
+      } catch (error) {
+        console.error("Erro ao excluir atendimento:", error);
+        alert("Erro ao excluir atendimento.");
+      }
+    }
+  };
 
   return (
     <>
       <HeaderAdmin />
-      <Text marginTop={"4.2rem"} textAlign="center" fontSize="3xl" fontWeight="bold">
-       Atendimentos
+      <Text marginTop="4.2rem" textAlign="center" fontSize="3xl" fontWeight="bold">
+        Atendimentos
       </Text>
       <Box mx="auto" mt={5} textAlign="center" fontSize="lg" fontWeight="bold" maxW="175vh" h="60vh" border=".125rem solid #000000" borderRadius="md" overflowY="scroll">
         <Table variant="simple">
-          <Thead maxW="175vh"  bgColor={"#000000"} >
-            <Tr >
-              <Th color={"#fff"} fontSize={"0.9rem"} paddingLeft={10} >Usuário</Th>
-              <Th color={"#fff"} fontSize={"0.9rem"} >Central</Th>
-              <Th color={"#fff"} fontSize={"0.9rem"} paddingLeft={10}>Data</Th>
-              <Th color={"#fff"} fontSize={"0.9rem"}>Atendimentos</Th>
-              <Th color={"#fff"} fontSize={"0.9rem"} paddingLeft={20} >Opções</Th>
+          <Thead bgColor="#000000">
+            <Tr>
+              <Th color="#fff" fontSize="0.9rem">Usuário</Th>
+              <Th color="#fff" fontSize="0.9rem">Central</Th>
+              <Th color="#fff" fontSize="0.9rem">Data</Th>
+              <Th color="#fff" fontSize="0.9rem">Atendimentos</Th>
+              <Th color="#fff" fontSize="0.9rem">Opções</Th>
             </Tr>
           </Thead>
           <Tbody>
-  {atendimentos.map((atendimento, index) => (
-    <Tr
-      key={atendimento.id}
-      bgColor={getRowColor(index)} 
-    >
-      
-      <Td>{usuarios[atendimento.usuarios_id] || "Não Encontrado"}</Td>
-      <Td>{unidades[atendimento.unidades_id] || "Não Encontrado"}</Td>
-      <Td>{format(new Date(atendimento.data_de_atendimento), "dd/MM/yyyy")}</Td>
-      <Td paddingLeft={20}> <Td paddingLeft={-4}>{servicos[atendimento.servicos_id]}</Td> {atendimento.quantidade}</Td>
-      <Td>
-        <Button
-          backgroundColor={"green.500"}
-          color={"#ffffff"}
-          w={"90px"}
-          margin={1}
-          onClick={() => {
-            handleOpenModal(atendimento);
-          }}
-        >
-          <BsSearch/>
-          
-        </Button>
-        <Button
-          backgroundColor={"red.500"}
-          color={"#ffffff"}
-          w={"90px"}
-          onClick={async () => {
-            const confirmDelete = window.confirm(
-              "Tem certeza de que deseja excluir este atendimento?"
-            );
-
-            if (confirmDelete) {
-              try {
-                const response = await api.delete(`/atendimentos/${atendimento.id}`);
-
-                if (response.status === 204) {
-                  // Atualize a interface ou faça qualquer outra ação após a exclusão bem-sucedida
-                  alert("Atendimento excluído com sucesso.");
-                  window.location.reload()
-                } else {
-                  // Trate outros códigos de status, se necessário
-                  alert("Ocorreu um erro ao excluir o atendimento.");
-                }
-              } catch (error) {
-                console.error("Erro ao excluir o atendimento:", error);
-                alert("Ocorreu um erro ao excluir o atendimento.");
-              }
-            }
-          }}
-        >
-          <BsFillTrashFill />
-        </Button>
-      </Td>
-    </Tr>
-  ))}
-</Tbody>
+            {atendimentos.map((atendimento: any, index: number) => (
+              <Tr key={atendimento.id} bgColor={getRowColor(index)}>
+                <Td>{usuarios[atendimento.usuarios_id]}</Td>
+                <Td>{unidades[atendimento.unidades_id] || "Não Encontrado"}</Td>
+                <Td>{format(new Date(atendimento.data_de_atendimento), "dd/MM/yyyy")}</Td>
+                <Td>{servicos[atendimento.servicos_id]}</Td>
+                <Td>{atendimento.quantidade}</Td>
+                <Td>
+                  <Button backgroundColor="green.500" color="#ffffff" w="90px" margin={1} onClick={() => {
+                    setSelectedAtendimento(atendimento);
+                    setIsModalOpen(true);
+                  }}>
+                    <BsSearch />
+                  </Button>
+                  <Button backgroundColor="red.500" color="#ffffff" w="90px" onClick={() => handleDelete(atendimento.id)}>
+                    <BsFillTrashFill />
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
         </Table>
       </Box>
-      <Box textAlign={"center"} marginTop={3} marginBottom={100}>
-      <Button backgroundColor={"green.400"} color={"#ffffff"}>
-        <Link href="/ad/cadastro" style={{textDecoration:"none"}} >Novo Atendimento</Link>
-      </Button>
+      <Box textAlign="center" mt={3} mb={100}>
+        <Button backgroundColor="green.400" color="#ffffff">
+          <Link href="/ad/cadastro" textDecoration="none">Novo Atendimento</Link>
+        </Button>
       </Box>
-     
-      <ModalAtendimento isOpen={isModalOpen} onClose={handleCloseModal} atendimento={selectedAtendimento} usuarios={usuarios} unidades={unidades} servicos={servicos}/>   
+      <ModalAtendimento isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} atendimento={selectedAtendimento} usuarios={usuarios} unidades={unidades} servicos={servicos} />
     </>
   );
 }

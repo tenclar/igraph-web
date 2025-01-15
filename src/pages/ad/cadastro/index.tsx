@@ -13,15 +13,27 @@ interface Usuario {
   nome: string;
 }
 
-function getSessionUser(): Usuario | null {
-  return { id: 1, nome: "Usuário Exemplo" }; // Simula um usuário logado
+function getSessionUser() {
+  if (typeof window !== "undefined") {
+    const userData = localStorage.getItem("loggedInUser");
+    if (userData) {
+      try {
+        return JSON.parse(userData);
+      } catch (error) {
+        console.error("Erro ao analisar os dados do usuário:", error);
+      }
+    }
+  }
+  return null;
 }
+
 
 export default function Formulario() {
   const [unidades, setUnidades] = useState<Unidade[]>([]);
   const [selectedUnidade, setSelectedUnidade] = useState<Unidade | null>(null);
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [quantidades, setQuantidades] = useState<{ [id: number]: number }>({});
+  const [usuario, setUsuario] = useState(null);
   const [dataAtendimento, setDataAtendimento] = useState<string>(
     getCurrentDate()
   );
@@ -36,32 +48,39 @@ export default function Formulario() {
   }
 
   useEffect(() => {
-    async function fetchUnidades() {
+    async function fetchData() {
       try {
-        const response = await api.get("/unidades");
-        const data = response.data;
-        setUnidades(data);
-        if (data && data.length > 0) setSelectedUnidade(data[0]); // Seleciona a primeira unidade como padrão
+        // Usando Promise.all para esperar todas as requisições de uma vez
+        const [unidadesResponse, usuarioResponse, servicosResponse] = await Promise.all([
+          api.get("/unidades"),
+          api.get("/usuarios"),
+          api.get("/servicos")
+        ]);
+  
+        // Processando os dados retornados
+        const unidadesData = unidadesResponse.data;
+        const usuarioData = usuarioResponse.data;
+        const servicosData = servicosResponse.data;
+  
+        // Atualizando o estado com os dados recebidos
+        setUsuario(usuarioData);
+        setUnidades(unidadesData);
+        setServicos(servicosData);
+  
+        // Selecionando a primeira unidade como padrão
+        if (unidadesData && unidadesData.length > 0) {
+          setSelectedUnidade(unidadesData[0]);
+        }
       } catch (error) {
         console.error(error);
-        alert("Ocorreu um erro ao buscar as unidades.");
+        alert("Ocorreu um erro ao buscar os dados.");
       }
     }
-
-    async function fetchServicos() {
-      try {
-        const response = await api.get("/servicos");
-        const data = response.data;
-        setServicos(data);
-      } catch (error) {
-        console.error(error);
-        alert("Ocorreu um erro ao buscar os serviços.");
-      }
-    }
-
-    fetchUnidades();
-    fetchServicos();
+  
+    // Chama a função fetchData para realizar as requisições
+    fetchData();
   }, []);
+  
 
   async function inserirDadosNoBanco() {
     try {
@@ -80,8 +99,9 @@ export default function Formulario() {
           quantidade,
           servicos_id: parseInt(servicoId, 10),
           unidades_id: selectedUnidade?.id || null,
-          usuarios_id: usuarioLogado.id,
+          usuarios_id: usuarioLogado.id // Pegue apenas o ID do usuário
         }));
+        
 
       for (const atendimento of atendimentos) {
         console.log("Inserindo atendimento no banco:", atendimento);
@@ -101,6 +121,8 @@ export default function Formulario() {
 
           if (responseComentario.status === 201) {
             console.log("Comentário inserido com sucesso.");
+            console.log("Nome do usuário logado:", usuarioLogado.nome);
+
             alert("Dados inseridos com sucesso!");
           } else {
             console.error("Erro ao inserir o comentário no banco.");
@@ -186,6 +208,14 @@ export default function Formulario() {
           />
         </Box>
       ))}
+      <Box marginTop={"2rem"} textAlign={"center"}>
+        <Text fontSize={"1.2rem"} fontWeight={"800"} fontStyle={"italic"}>
+          Registrado por
+        </Text>
+        <Text fontSize="1.1rem" fontWeight="700" color="blue">
+      {usuario ? setUsuario.name : "Carregando..."} {/* Considerando que o nome do usuário é `usuario.nome` */}
+    </Text>
+      </Box>
       <Box marginTop={"2rem"} textAlign={"center"}>
         <Text fontSize={"1.2rem"} fontWeight={"800"} fontStyle={"italic"}>
           Comentários
